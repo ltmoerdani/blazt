@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 abstract class AbstractRepository
 {
-    protected abstract function getModelClass(): string;
+    abstract protected function getModelClass(): string;
 
     public function find(int $id): ?Model
     {
@@ -27,4 +27,4 @@ abstract class AbstractRepository
     {
         return $model->delete();
     }
-} 
+}

@@ -19,19 +19,19 @@ class WhatsAppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->singleton(WhatsAppAccountRepository::class, function ($app) {
+        $this->app->singleton(WhatsAppAccountRepository::class, function () {
             return new WhatsAppAccountRepository();
         });
 
-        $this->app->singleton(QRCodeGenerator::class, function ($app) {
+        $this->app->singleton(QRCodeGenerator::class, function () {
             return new QRCodeGenerator();
         });
 
-        $this->app->singleton(MessageSenderInterface::class, function ($app) {
+        $this->app->singleton(MessageSenderInterface::class, function () {
             return new MessageSender();
         });
 
-        $this->app->singleton(SessionManagerInterface::class, function ($app) {
+        $this->app->singleton(SessionManagerInterface::class, function () {
             return new SessionManager();
         });
 
@@ -52,4 +52,4 @@ class WhatsAppServiceProvider extends ServiceProvider
     {
         //
     }
-} 
+}

@@ -11,4 +11,4 @@ interface SessionManagerInterface
     public function updateSession(WhatsAppSession $session, array $data): bool;
     public function terminateSession(WhatsAppAccount $account): bool;
     public function getAccountSession(WhatsAppAccount $account): ?WhatsAppSession;
-} 
+}

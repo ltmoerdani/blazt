@@ -14,4 +14,4 @@ interface WhatsAppServiceInterface
     public function getQRCode(WhatsAppAccount $account): ?string;
     public function sendMessage(WhatsAppAccount $account, Contact $contact, string $messageContent, ?string $mediaPath = null): WhatsAppMessage;
     public function getAccountStatus(WhatsAppAccount $account): string;
-} 
+}

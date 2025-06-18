@@ -17,7 +17,7 @@ class AIServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->singleton(ProviderManager::class, function ($app) {
+        $this->app->singleton(ProviderManager::class, function () {
             $manager = new ProviderManager();
             $manager->registerProvider('openai', new OpenAIProvider());
             $manager->registerProvider('deepseek', new DeepSeekProvider());
@@ -39,4 +39,4 @@ class AIServiceProvider extends ServiceProvider
     {
         //
     }
-} 
+}

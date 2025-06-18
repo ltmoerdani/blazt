@@ -14,4 +14,4 @@ interface AnalyticsServiceInterface
     public function updateCampaignMetrics(Campaign $campaign): void;
     public function getDashboardSummary(User $user, Carbon $startDate, Carbon $endDate): array;
     public function getCampaignPerformanceOverTime(Campaign $campaign, Carbon $startDate, Carbon $endDate): array;
-} 
+}

@@ -13,4 +13,4 @@ interface ChatbotInterface
     public function startConversation(User $user, WhatsAppAccount $whatsappAccount, Contact $contact, string $initialMessage): Conversation;
     public function processChatMessage(Conversation $conversation, string $messageContent, string $senderType = 'contact'): ConversationMessage;
     public function updateConversationStatus(Conversation $conversation, string $status): bool;
-} 
+}

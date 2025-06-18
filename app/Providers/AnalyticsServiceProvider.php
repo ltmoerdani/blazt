@@ -13,7 +13,7 @@ class AnalyticsServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->singleton(AnalyticsServiceInterface::class, function ($app) {
+        $this->app->singleton(AnalyticsServiceInterface::class, function () {
             return new AnalyticsService();
         });
     }
@@ -25,4 +25,4 @@ class AnalyticsServiceProvider extends ServiceProvider
     {
         //
     }
-} 
+}
