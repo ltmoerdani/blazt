@@ -7,6 +7,9 @@ use App\Http\Controllers\Dashboard\ContactController;
 use App\Http\Controllers\Dashboard\SettingsController;
 use App\Http\Controllers\Dashboard\WhatsAppAccountController;
 
+// Define route path constant to avoid duplication
+const CONTACTS_GROUP_ROUTE = 'contacts/groups/{group}';
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -23,10 +26,10 @@ Route::middleware(['auth'])->prefix('dashboard')->name('dashboard.')->group(func
     Route::get('contacts/groups', [ContactController::class, 'indexGroups'])->name('contacts.groups.index');
     Route::get('contacts/groups/create', [ContactController::class, 'createGroup'])->name('contacts.groups.create');
     Route::post('contacts/groups', [ContactController::class, 'storeGroup'])->name('contacts.groups.store');
-    Route::get('contacts/groups/{group}', [ContactController::class, 'showGroup'])->name('contacts.groups.show');
-    Route::get('contacts/groups/{group}/edit', [ContactController::class, 'editGroup'])->name('contacts.groups.edit');
-    Route::put('contacts/groups/{group}', [ContactController::class, 'updateGroup'])->name('contacts.groups.update');
-    Route::delete('contacts/groups/{group}', [ContactController::class, 'destroyGroup'])->name('contacts.groups.destroy');
+    Route::get(CONTACTS_GROUP_ROUTE, [ContactController::class, 'showGroup'])->name('contacts.groups.show');
+    Route::get(CONTACTS_GROUP_ROUTE . '/edit', [ContactController::class, 'editGroup'])->name('contacts.groups.edit');
+    Route::put(CONTACTS_GROUP_ROUTE, [ContactController::class, 'updateGroup'])->name('contacts.groups.update');
+    Route::delete(CONTACTS_GROUP_ROUTE, [ContactController::class, 'destroyGroup'])->name('contacts.groups.destroy');
     Route::post('contacts/import', [ContactController::class, 'importContacts'])->name('contacts.import');
 
     // Settings Routes

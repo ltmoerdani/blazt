@@ -1,12 +1,14 @@
 <?php
 
+// Log file path constant
+const LARAVEL_LOG_PATH = 'logs/laravel.log';
+
 use Monolog\Handler\NullHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\SyslogUdpHandler;
 use Monolog\Processor\PsrLogMessageProcessor;
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Default Log Channel
@@ -60,14 +62,14 @@ return [
 
         'single' => [
             'driver' => 'single',
-            'path' => storage_path('logs/laravel.log'),
+            'path' => storage_path(LARAVEL_LOG_PATH),
             'level' => env('LOG_LEVEL', 'debug'),
             'replace_placeholders' => true,
         ],
 
         'daily' => [
             'driver' => 'daily',
-            'path' => storage_path('logs/laravel.log'),
+            'path' => storage_path(LARAVEL_LOG_PATH),
             'level' => env('LOG_LEVEL', 'debug'),
             'days' => env('LOG_DAILY_DAYS', 14),
             'replace_placeholders' => true,
@@ -124,7 +126,7 @@ return [
         ],
 
         'emergency' => [
-            'path' => storage_path('logs/laravel.log'),
+            'path' => storage_path(LARAVEL_LOG_PATH),
         ],
 
     ],

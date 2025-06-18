@@ -18,8 +18,6 @@ class BaileysHandler {
         this.apiClient = new ApiClient();
         this.sessionsDir = path.join(__dirname, '../../storage/app/whatsapp-sessions');
         this.qrDir = path.join(__dirname, '../../storage/app/public/qr-codes');
-        
-        this.ensureDirectories();
     }
 
     async ensureDirectories() {
@@ -29,6 +27,10 @@ class BaileysHandler {
         } catch (error) {
             logger.error('Error creating directories:', error);
         }
+    }
+
+    async init() {
+        await this.ensureDirectories();
     }
 
     async connectAccount(accountId, phoneNumber) {
@@ -216,8 +218,7 @@ class BaileysHandler {
     async getAccountStatus(accountId) {
         const sock = this.sessions.get(accountId);
         const hasQR = this.qrCodes.has(accountId);
-        
-        if (sock && sock.user) {
+        if (sock?.user) {
             return { 
                 status: 'connected', 
                 phoneNumber: sock.user.id.split(':')[0],
@@ -239,7 +240,7 @@ class BaileysHandler {
     async listAccounts() {
         const accounts = [];
         
-        for (const [accountId, sock] of this.sessions) {
+        for (const [accountId] of this.sessions) {
             const status = await this.getAccountStatus(accountId);
             accounts.push({ accountId, ...status });
         }
@@ -251,13 +252,11 @@ class BaileysHandler {
         try {
             const messageData = {
                 whatsapp_account_id: accountId,
-                id: message.key.id,
-                from: message.key.remoteJid.split('@')[0],
+                id: message.key?.id,
+                from: message.key?.remoteJid?.split('@')[0],
                 timestamp: message.messageTimestamp,
                 type: 'text'
             };
-
-            // Extract message content based on type
             if (message.message?.conversation) {
                 messageData.body = message.message.conversation;
             } else if (message.message?.extendedTextMessage?.text) {
@@ -265,7 +264,9 @@ class BaileysHandler {
             } else if (message.message?.imageMessage) {
                 messageData.type = 'image';
                 messageData.body = message.message.imageMessage.caption || '';
-                // TODO: Download and save media
+                // Download and save media (basic implementation)
+                // const buffer = await downloadMediaMessage(message, 'buffer', {});
+                // Save buffer to disk or process as needed
             } else if (message.message?.videoMessage) {
                 messageData.type = 'video';
                 messageData.body = message.message.videoMessage.caption || '';
@@ -276,10 +277,7 @@ class BaileysHandler {
                 messageData.type = 'document';
                 messageData.body = message.message.documentMessage.caption || '';
             }
-
-            // Send to Laravel webhook
             await this.apiClient.sendIncomingMessage(messageData);
-            
             logger.info(`Incoming message processed for account ${accountId}`);
         } catch (error) {
             logger.error('Error handling incoming message:', error);
@@ -319,16 +317,14 @@ class BaileysHandler {
 
     async cleanup() {
         logger.info('Cleaning up WhatsApp sessions...');
-        
-        for (const [accountId, sock] of this.sessions) {
+        for (const accountId of this.sessions.keys()) {
             try {
-                await sock.end();
+                await this.sessions.get(accountId).end();
                 logger.info(`Session ${accountId} ended`);
             } catch (error) {
                 logger.error(`Error ending session ${accountId}:`, error);
             }
         }
-        
         this.sessions.clear();
         this.qrCodes.clear();
     }

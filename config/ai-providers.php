@@ -1,7 +1,11 @@
 <?php
 
-return [
+// Business hours constants
+const BUSINESS_HOUR_START = '09:00';
+const BUSINESS_HOUR_END = '17:00';
+const BUSINESS_HOUR_SATURDAY_END = '14:00';
 
+return [
     /*
     |--------------------------------------------------------------------------
     | Default AI Provider
@@ -137,12 +141,12 @@ return [
             'enabled' => true,
             'timezone' => 'Asia/Jakarta',
             'hours' => [
-                'monday' => ['09:00', '17:00'],
-                'tuesday' => ['09:00', '17:00'],
-                'wednesday' => ['09:00', '17:00'],
-                'thursday' => ['09:00', '17:00'],
-                'friday' => ['09:00', '17:00'],
-                'saturday' => ['09:00', '14:00'],
+                'monday' => [BUSINESS_HOUR_START, BUSINESS_HOUR_END],
+                'tuesday' => [BUSINESS_HOUR_START, BUSINESS_HOUR_END],
+                'wednesday' => [BUSINESS_HOUR_START, BUSINESS_HOUR_END],
+                'thursday' => [BUSINESS_HOUR_START, BUSINESS_HOUR_END],
+                'friday' => [BUSINESS_HOUR_START, BUSINESS_HOUR_END],
+                'saturday' => [BUSINESS_HOUR_START, BUSINESS_HOUR_SATURDAY_END],
                 'sunday' => null, // Closed
             ],
         ],

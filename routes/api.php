@@ -41,9 +41,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('contacts', ContactController::class);
     Route::get('contact-groups', [ContactController::class, 'indexGroups']);
     Route::post('contact-groups', [ContactController::class, 'storeGroup']);
-    Route::get('contact-groups/{group}', [ContactController::class, 'showGroup']);
-    Route::put('contact-groups/{group}', [ContactController::class, 'updateGroup']);
-    Route::delete('contact-groups/{group}', [ContactController::class, 'destroyGroup']);
+    Route::get(CONTACT_GROUP_ROUTE, [ContactController::class, 'showGroup']);
+    Route::put(CONTACT_GROUP_ROUTE, [ContactController::class, 'updateGroup']);
+    Route::delete(CONTACT_GROUP_ROUTE, [ContactController::class, 'destroyGroup']);
     Route::post('contacts/import', [ContactController::class, 'importContacts']);
 
     // Analytics API Routes
@@ -60,9 +60,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('whatsapp')->group(function () {
         Route::get('accounts', [\App\Http\Controllers\API\WhatsAppController::class, 'index']);
         Route::post('accounts', [\App\Http\Controllers\API\WhatsAppController::class, 'store']);
-        Route::get('accounts/{account}', [\App\Http\Controllers\API\WhatsAppController::class, 'show']);
-        Route::put('accounts/{account}', [\App\Http\Controllers\API\WhatsAppController::class, 'update']);
-        Route::delete('accounts/{account}', [\App\Http\Controllers\API\WhatsAppController::class, 'destroy']);
+        Route::get(ACCOUNTS_ACCOUNT_ROUTE, [\App\Http\Controllers\API\WhatsAppController::class, 'show']);
+        Route::put(ACCOUNTS_ACCOUNT_ROUTE, [\App\Http\Controllers\API\WhatsAppController::class, 'update']);
+        Route::delete(ACCOUNTS_ACCOUNT_ROUTE, [\App\Http\Controllers\API\WhatsAppController::class, 'destroy']);
         Route::post('accounts/{account}/connect', [\App\Http\Controllers\API\WhatsAppController::class, 'connect']);
         Route::post('accounts/{account}/disconnect', [\App\Http\Controllers\API\WhatsAppController::class, 'disconnect']);
         Route::get('accounts/{account}/qr-code', [\App\Http\Controllers\API\WhatsAppController::class, 'getQRCode']);
@@ -73,11 +73,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('campaigns')->group(function () {
         Route::get('/', [\App\Http\Controllers\API\CampaignController::class, 'index']);
         Route::post('/', [\App\Http\Controllers\API\CampaignController::class, 'store']);
-        Route::get('{campaign}', [\App\Http\Controllers\API\CampaignController::class, 'show']);
-        Route::put('{campaign}', [\App\Http\Controllers\API\CampaignController::class, 'update']);
-        Route::delete('{campaign}', [\App\Http\Controllers\API\CampaignController::class, 'destroy']);
-        Route::post('{campaign}/execute', [\App\Http\Controllers\API\CampaignController::class, 'execute']);
-        Route::get('{campaign}/analytics', [\App\Http\Controllers\API\CampaignController::class, 'analytics']);
+        Route::get(CAMPAIGN_ROUTE, [\App\Http\Controllers\API\CampaignController::class, 'show']);
+        Route::put(CAMPAIGN_ROUTE, [\App\Http\Controllers\API\CampaignController::class, 'update']);
+        Route::delete(CAMPAIGN_ROUTE, [\App\Http\Controllers\API\CampaignController::class, 'destroy']);
+        Route::post(CAMPAIGN_ROUTE . '/execute', [\App\Http\Controllers\API\CampaignController::class, 'execute']);
+        Route::get(CAMPAIGN_ROUTE . '/analytics', [\App\Http\Controllers\API\CampaignController::class, 'analytics']);
     });
 });
 
@@ -106,3 +106,8 @@ Route::get('health', function () {
         'environment' => app()->environment(),
     ]);
 });
+
+// Define route path constants to avoid duplication
+const CONTACT_GROUP_ROUTE = 'contact-groups/{group}';
+const ACCOUNTS_ACCOUNT_ROUTE = 'accounts/{account}';
+const CAMPAIGN_ROUTE = '{campaign}';

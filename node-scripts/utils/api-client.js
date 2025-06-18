@@ -29,7 +29,7 @@ class ApiClient {
             },
             (error) => {
                 logger.error('API Request Error', { error: error.message });
-                return Promise.reject(error);
+                return Promise.reject(new Error(error.message));
             }
         );
 
@@ -48,7 +48,7 @@ class ApiClient {
                     url: error.config?.url,
                     message: error.message
                 });
-                return Promise.reject(error);
+                return Promise.reject(new Error(error.message));
             }
         );
     }
