@@ -1,5 +1,16 @@
 <?php
 
+// Define route path constants to avoid duplication
+if (!defined('CONTACT_GROUP_ROUTE')) {
+    define('CONTACT_GROUP_ROUTE', 'contact-groups/{group}');
+}
+if (!defined('ACCOUNTS_ACCOUNT_ROUTE')) {
+    define('ACCOUNTS_ACCOUNT_ROUTE', 'accounts/{account}');
+}
+if (!defined('CAMPAIGN_ROUTE')) {
+    define('CAMPAIGN_ROUTE', '{campaign}');
+}
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\ContactController;
@@ -106,8 +117,3 @@ Route::get('health', function () {
         'environment' => app()->environment(),
     ]);
 });
-
-// Define route path constants to avoid duplication
-const CONTACT_GROUP_ROUTE = 'contact-groups/{group}';
-const ACCOUNTS_ACCOUNT_ROUTE = 'accounts/{account}';
-const CAMPAIGN_ROUTE = '{campaign}';

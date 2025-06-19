@@ -8,7 +8,9 @@ use App\Http\Controllers\Dashboard\SettingsController;
 use App\Http\Controllers\Dashboard\WhatsAppAccountController;
 
 // Define route path constant to avoid duplication
-const CONTACTS_GROUP_ROUTE = 'contacts/groups/{group}';
+if (!defined('CONTACTS_GROUP_ROUTE')) {
+    define('CONTACTS_GROUP_ROUTE', 'contacts/groups/{group}');
+}
 
 Route::get('/', function () {
     return view('welcome');
