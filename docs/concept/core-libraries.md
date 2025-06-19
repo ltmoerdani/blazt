@@ -58,9 +58,10 @@
 - **node-cache**: In-memory caching untuk session data
 - **ws**: WebSocket implementation untuk real-time communication
 - **express**: Minimal web server untuk API communication dengan Laravel
+- **Node.js 24.x**: Latest LTS runtime dengan V8 engine terbaru untuk performa optimal
 
 ### **Process Management**
-- **pm2**: Process manager untuk Node.js applications
+- **pm2**: Process manager untuk Node.js applications dengan Node.js 24 support
 - **supervisor**: System process control untuk production deployment
 - **concurrently**: Run multiple npm scripts simultaneously untuk development
 

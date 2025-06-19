@@ -196,11 +196,11 @@ Setiap domain memiliki service layer yang handle business logic:
 
 ### System Requirements
 - **PHP**: 8.2 atau lebih tinggi
-- **Node.js**: 18.x atau lebih tinggi (20.x recommended)
+- **Node.js**: 24.x atau lebih tinggi (latest LTS recommended)
 - **MySQL**: 8.0 atau lebih tinggi
 - **Redis**: 6.x atau lebih tinggi (optional, untuk cache dan queue)
 - **Composer**: Latest version
-- **NPM**: Latest version
+- **NPM**: 11.x atau lebih tinggi
 
 ### PHP Extensions
 ```bash
@@ -1522,8 +1522,8 @@ sudo mysql_secure_installation
 # Install Redis
 sudo apt install redis-server
 
-# Install Node.js 20.x
-curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+# Install Node.js 24.x
+curl -fsSL https://deb.nodesource.com/setup_24.x | sudo -E bash -
 sudo apt install nodejs
 
 # Install Composer

@@ -28,7 +28,7 @@
 
 ### **Unofficial WhatsApp Library**
 - **Baileys (@whiskeysockets/baileys)**: Library Node.js untuk koneksi WhatsApp Web protocol
-- **Node.js 18+**: Runtime environment untuk menjalankan Baileys service
+- **Node.js 24+**: Runtime environment terbaru untuk menjalankan Baileys service dengan performa optimal
 - **PM2**: Process manager untuk menjaga Baileys service tetap running
 - **QRCode**: Generator QR code untuk authentication WhatsApp Web
 
