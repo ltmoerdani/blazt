@@ -3,37 +3,34 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
-use App\Interfaces\Analytics\AnalyticsServiceInterface;
-use Carbon\Carbon;
 
+/**
+ * Handle basic dashboard functionality for authenticated users
+ */
 class DashboardController extends Controller
 {
-    protected $analyticsService;
-
-    public function __construct(AnalyticsServiceInterface $analyticsService)
-    {
-        $this->analyticsService = $analyticsService;
-    }
-
+    /**
+     * Show the application dashboard.
+     */
     public function index()
     {
+        /** @var User $user */
         $user = Auth::user();
-        if (!$user) {
-            // This should ideally be handled by middleware, but as a fallback:
-            return redirect('/login'); // Redirect to login page or show error
-        }
 
-        $startDate = Carbon::now()->startOfMonth();
-        $endDate = Carbon::now()->endOfDay();
-
-        $summary = $this->analyticsService->getDashboardSummary($user, $startDate, $endDate);
-
-        return view('dashboard.index', [
-            'summary' => $summary,
+        // Basic dashboard data for Phase 1
+        $dashboardData = [
             'user' => $user,
-            // Pass other data needed for the dashboard view
-        ]);
+            'subscription_status' => $user->subscription_status,
+            'subscription_plan' => $user->subscription_plan,
+            'subscription_expires_at' => $user->subscription_expires_at,
+            'email_verified' => $user->hasVerifiedEmail(),
+            'total_contacts' => 0, // Will be implemented in Contact phase
+            'total_campaigns' => 0, // Will be implemented in Campaign phase
+            'total_messages' => 0, // Will be implemented in Messaging phase
+        ];
+
+        return view('dashboard.index', compact('dashboardData'));
     }
 }

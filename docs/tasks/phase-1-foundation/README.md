@@ -10,11 +10,11 @@ Phase ini fokus pada membangun foundation yang solid untuk platform WhatsApp Saa
 **Complexity**: LOW | **Priority**: CRITICAL
 
 #### 1.1 Basic Authentication System
-- [ ] User registration dengan email verification
-- [ ] Login/logout functionality
-- [ ] Password reset mechanism
-- [ ] Basic user profile management
-- [ ] Session management
+- [x] User registration dengan email verification
+- [x] Login/logout functionality
+- [x] Password reset mechanism
+- [x] Basic user profile management
+- [x] Session management
 
 **Files to work on:**
 - `app/Models/User.php`

@@ -1,9 +1,11 @@
 <?php
 
 // Business hours constants
-const BUSINESS_HOUR_START = '09:00';
-const BUSINESS_HOUR_END = '17:00';
-const BUSINESS_HOUR_SATURDAY_END = '14:00';
+if (!defined('BUSINESS_HOUR_START')) {
+    define('BUSINESS_HOUR_START', '09:00');
+    define('BUSINESS_HOUR_END', '17:00');
+    define('BUSINESS_HOUR_SATURDAY_END', '14:00');
+}
 
 return [
     /*
