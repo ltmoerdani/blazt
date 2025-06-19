@@ -57,9 +57,7 @@
                             </div>
                         @endif
 
-                        <form method="POST" action="{{ filament()->getLoginUrl() }}" class="blazt-form">
-                            @csrf
-                            
+                        <form wire:submit.prevent="loginUser" class="blazt-form">
                             <div class="blazt-form-fields">
                                 <!-- Email Field -->
                                 <div class="blazt-form-group">
@@ -68,8 +66,7 @@
                                         <input
                                             type="email"
                                             id="email"
-                                            name="email"
-                                            value="{{ old('email') }}"
+                                            wire:model="email"
                                             class="blazt-input @error('email') border-red-500 @enderror"
                                             required
                                             autofocus
@@ -85,7 +82,7 @@
                                         <input
                                             type="password"
                                             id="password"
-                                            name="password"
+                                            wire:model="password"
                                             class="blazt-input @error('password') border-red-500 @enderror"
                                             required
                                             autocomplete="current-password"
@@ -101,10 +98,8 @@
                                         <input
                                             type="checkbox"
                                             id="remember"
-                                            name="remember"
-                                            value="1"
+                                            wire:model="remember"
                                             class="blazt-checkbox"
-                                            {{ old('remember') ? 'checked' : '' }}
                                         >
                                     </div>
                                     <div class="ml-3 text-sm">

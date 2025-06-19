@@ -6,9 +6,35 @@ use Filament\Forms\Components\Component;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Pages\Auth\Login as BaseLogin;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Auth;
 
 class Login extends BaseLogin
 {
+    public $email = '';
+    public $password = '';
+    public $remember = false;
+
+    public function loginUser()
+    {
+        $this->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
+
+        if (Auth::attempt([
+            'email' => $this->email,
+            'password' => $this->password,
+        ], $this->remember)) {
+            session()->regenerate();
+            return redirect()->intended(filament()->getUrl());
+        }
+
+        throw ValidationException::withMessages([
+            'email' => 'The provided credentials are incorrect.',
+        ]);
+    }
+
     /**
      * @return array<int | string, string | Form>
      */

@@ -160,6 +160,7 @@ body {
     font-size: 0.875rem; /* sm:text-sm */
     line-height: 1.5rem; /* sm:leading-6 */
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    background-color: #ffffff;
 }
 
 .blazt-input::placeholder {
@@ -169,31 +170,6 @@ body {
 .blazt-input:focus {
     border-color: #2d8f5f;
     box-shadow: 0 0 0 2px rgba(45, 143, 95, 0.2);
-}
-
-/* Password field with toggle */
-.blazt-password-container {
-    position: relative;
-}
-
-.blazt-password-toggle {
-    position: absolute;
-    right: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: none;
-    border: none;
-    color: #6b7280;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: 500;
-    padding: 6px;
-    border-radius: 4px;
-    transition: color 0.2s ease;
-}
-
-.blazt-password-toggle:hover {
-    color: #2d8f5f;
 }
 
 /* Remember and forgot password row - Exact Swiftchats layout */
