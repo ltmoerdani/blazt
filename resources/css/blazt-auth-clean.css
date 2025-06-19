@@ -1,0 +1,378 @@
+/* Blazt Authentication - Exact Swiftchats Implementation */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Outfit', 'Helvetica', sans-serif;
+    background-color: #ffffff;
+    color: #374151;
+    line-height: 1.5rem;
+    min-height: 100vh;
+    tab-size: 4;
+    text-size-adjust: 100%;
+    unicode-bidi: isolate;
+}
+
+.direction-ltr {
+    direction: ltr;
+}
+
+.flex {
+    display: flex;
+}
+
+.h-screen {
+    height: 100vh;
+}
+
+.justify-center {
+    justify-content: center;
+}
+
+.blazt-auth-container {
+    width: 20em; /* Exact w-[20em] from Swiftchats = 320px */
+    margin-top: 10rem; /* mt-40 equivalent */
+}
+
+/* Ensure proper centering for the entire layout */
+.direction-ltr > .flex.h-screen.justify-center {
+    align-items: flex-start;
+    padding: 0;
+}
+
+.direction-ltr > .flex.h-screen.justify-center > .flex.justify-center {
+    width: 100%;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+/* Logo and Brand - Exact Swiftchats implementation */
+.blazt-brand {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1.25rem; /* mb-5 */
+}
+
+.blazt-logo {
+    max-width: 180px; /* max-w-[180px] */
+    height: auto;
+}
+
+.blazt-logo img {
+    width: 100%;
+    height: auto;
+}
+
+/* Fallback logo styling */
+.blazt-logo::after {
+    content: "⚡ Blazt";
+    display: none;
+    font-size: 24px;
+    font-weight: 700;
+    color: #2d8f5f;
+    text-align: center;
+}
+
+.blazt-logo img:invalid,
+.blazt-logo img[src=""],
+.blazt-logo img:not([src]) {
+    display: none;
+}
+
+.blazt-logo img:invalid + ::after,
+.blazt-logo img[src=""] + ::after,
+.blazt-logo img:not([src]) + ::after {
+    display: block;
+}
+
+/* Form Container */
+.blazt-form-container {
+    background: #ffffff;
+}
+
+.blazt-form-title {
+    font-size: 1.5rem; /* text-2xl = 24px */
+    font-weight: 600;
+    color: #1f2937;
+    text-align: center;
+    margin-bottom: 0;
+}
+
+.blazt-form-subtitle {
+    text-align: center;
+    font-size: 0.875rem; /* text-sm = 14px */
+    color: #64748b; /* text-slate-500 */
+    margin-top: 0;
+    margin-bottom: 1.25rem; /* mt-5 equivalent */
+}
+
+.blazt-form-subtitle a,
+.text-primary-600,
+.text-primary-500 {
+    font-size: 0.875rem; /* text-sm */
+    color: #2d8f5f; /* text-primary-600 */
+    border-bottom: 1px solid transparent;
+    text-decoration: none;
+    transition: border-color 0.2s ease;
+}
+
+.blazt-form-subtitle a:hover,
+.border-b:hover {
+    border-bottom-color: #6b7280; /* hover:border-gray-500 */
+}
+
+/* Form Elements - Exact Swiftchats styling */
+.blazt-form {
+    margin-top: 1.25rem; /* mt-5 */
+}
+
+.blazt-form-fields {
+    margin-top: 1.25rem; /* mt-5 */
+    display: flex;
+    flex-direction: column;
+    gap: 1rem; /* space-y-4 */
+}
+
+.blazt-form-group {
+    width: 100%;
+}
+
+.blazt-label {
+    display: block;
+    font-size: 0.875rem; /* text-sm */
+    line-height: 1.5rem; /* leading-6 */
+    color: #111827; /* text-gray-900 */
+    margin-bottom: 0.25rem;
+}
+
+.blazt-input {
+    display: block;
+    width: 100%;
+    border-radius: 0.375rem; /* rounded-md */
+    border: 1px solid #d1d5db; /* ring-1 ring-inset ring-gray-300 */
+    padding: 0.375rem 1rem; /* py-1.5 px-4 */
+    color: #111827; /* text-gray-900 */
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* shadow-sm */
+    outline: none;
+    font-size: 0.875rem; /* sm:text-sm */
+    line-height: 1.5rem; /* sm:leading-6 */
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.blazt-input::placeholder {
+    color: #9ca3af; /* placeholder:text-gray-400 */
+}
+
+.blazt-input:focus {
+    border-color: #2d8f5f;
+    box-shadow: 0 0 0 2px rgba(45, 143, 95, 0.2);
+}
+
+/* Password field with toggle */
+.blazt-password-container {
+    position: relative;
+}
+
+.blazt-password-toggle {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #6b7280;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 6px;
+    border-radius: 4px;
+    transition: color 0.2s ease;
+}
+
+.blazt-password-toggle:hover {
+    color: #2d8f5f;
+}
+
+/* Remember and forgot password row - Exact Swiftchats layout */
+.blazt-form-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 1.25rem; /* mt-5 */
+}
+
+.blazt-checkbox-container {
+    display: flex;
+    align-items: flex-start;
+}
+
+.blazt-checkbox-inner {
+    display: flex;
+    align-items: center;
+    height: 1.25rem; /* h-5 */
+}
+
+.ml-3 {
+    margin-left: 0.75rem;
+}
+
+.text-sm {
+    font-size: 0.875rem;
+}
+
+.blazt-checkbox {
+    width: 1rem; /* w-4 */
+    height: 1rem; /* h-4 */
+    border: 1px solid #d1d5db; /* border-gray-300 */
+    border-radius: 0.25rem; /* rounded */
+    background-color: #f9fafb; /* bg-gray-50 */
+    accent-color: #2d8f5f;
+    margin-right: 0;
+}
+
+.blazt-checkbox:focus {
+    box-shadow: 0 0 0 3px rgba(45, 143, 95, 0.3); /* focus:ring-3 focus:ring-primary-300 */
+}
+
+.blazt-checkbox-label {
+    margin-left: 0.75rem; /* ml-3 */
+    font-size: 0.875rem; /* text-sm */
+    color: #6b7280; /* text-gray-500 */
+}
+
+.blazt-forgot-link {
+    font-size: 0.875rem; /* text-sm */
+    color: #2d8f5f; /* text-primary-600 */
+    border-bottom: 1px solid transparent;
+    text-decoration: none;
+    transition: border-color 0.2s ease;
+}
+
+.blazt-forgot-link:hover {
+    border-bottom-color: #6b7280; /* hover:border-gray-500 */
+}
+
+/* Submit button - Exact Swiftchats styling */
+.blazt-submit-container {
+    margin-top: 1.5rem; /* mt-6 */
+}
+
+.blazt-submit-btn {
+    border-radius: 0.375rem; /* rounded-md */
+    background-color: #2d8f5f; /* bg-primary */
+    padding: 0.75rem; /* py-3 px-3 */
+    font-size: 0.875rem; /* text-sm */
+    color: white;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* shadow-sm */
+    width: 100%; /* w-full */
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.blazt-submit-btn:hover {
+    background-color: #1a5d3a;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(45, 143, 95, 0.2);
+}
+
+.blazt-submit-btn:active {
+    transform: translateY(0);
+}
+
+.blazt-submit-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Back to login link */
+.blazt-back-link {
+    text-align: center;
+    margin-top: 16px;
+}
+
+.blazt-back-link a {
+    color: #2d8f5f;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.blazt-back-link a:hover {
+    color: #1a5d3a;
+}
+
+/* Error and success messages */
+.blazt-message {
+    padding: 12px 14px;
+    border-radius: 8px;
+    font-size: 14px;
+    margin-bottom: 16px;
+}
+
+.blazt-error {
+    background-color: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #dc2626;
+}
+
+.blazt-success {
+    background-color: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    color: #166534;
+}
+
+/* Screen reader only */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* Responsive design */
+@media (max-width: 480px) {
+    .blazt-auth-container {
+        width: 100%;
+        max-width: 20rem;
+        margin-top: 4rem;
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+    
+    .blazt-form-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+}
+
+@media (min-width: 481px) {
+    .direction-ltr {
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        padding-top: 0;
+    }
+    
+    .direction-ltr > .flex.h-screen.justify-center {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+    }
+}

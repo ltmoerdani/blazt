@@ -1,0 +1,337 @@
+/* Blazt Filament Admin Panel Custom Styles */
+
+/* Override Filament default colors with Blazt branding */
+:root {
+    --primary-50: rgb(240 249 244);
+    --primary-100: rgb(220 244 227);
+    --primary-200: rgb(187 230 201);
+    --primary-300: rgb(139 211 163);
+    --primary-400: rgb(86 182 119);
+    --primary-500: rgb(45 143 95);
+    --primary-600: rgb(26 93 58);
+    --primary-700: rgb(22 69 50);
+    --primary-800: rgb(19 60 43);
+    --primary-900: rgb(16 50 37);
+    --primary-950: rgb(7 26 18);
+}
+
+/* Custom panel styles */
+.fi-sidebar {
+    background-color: rgb(26 93 58) !important;
+}
+
+.fi-sidebar-nav-item-active {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.fi-topbar {
+    background-color: white !important;
+    border-bottom: 1px solid rgb(229 231 235) !important;
+}
+
+/* Login page overrides */
+.fi-login-page {
+    background: #f8fafc !important;
+}
+
+.fi-login-card {
+    border-radius: 8px !important;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06) !important;
+}
+
+/* Form inputs */
+.fi-input {
+    border-radius: 6px !important;
+    border-color: rgb(229 231 235) !important;
+}
+
+.fi-input:focus {
+    border-color: rgb(26 93 58) !important;
+    box-shadow: 0 0 0 3px rgba(26, 93, 58, 0.1) !important;
+}
+
+/* Buttons */
+.fi-btn-primary {
+    background-color: rgb(26 93 58) !important;
+    border-color: rgb(26 93 58) !important;
+}
+
+.fi-btn-primary:hover {
+    background-color: rgb(22 69 50) !important;
+    border-color: rgb(22 69 50) !important;
+}
+
+/* Dashboard cards */
+.fi-widget {
+    border-radius: 8px !important;
+}
+
+/* Navigation brand */
+.fi-logo {
+    color: white !important;
+    font-weight: bold !important;
+}
+
+/* Tables */
+.fi-table-header {
+    background-color: rgb(249 250 251) !important;
+}
+
+/* Notification styles */
+.fi-notification {
+    border-radius: 8px !important;
+}
+
+.fi-notification-success {
+    background-color: rgb(240 253 244) !important;
+    border-color: rgb(187 247 208) !important;
+    color: rgb(21 128 61) !important;
+}
+
+.fi-notification-error {
+    background-color: rgb(254 242 242) !important;
+    border-color: rgb(254 202 202) !important;
+    color: rgb(220 38 38) !important;
+}
+
+/* Modal styles */
+.fi-modal {
+    border-radius: 8px !important;
+}
+
+.fi-modal-header {
+    border-bottom: 1px solid rgb(229 231 235) !important;
+}
+
+/* Badge styles */
+.fi-badge {
+    border-radius: 6px !important;
+}
+
+.fi-badge-success {
+    background-color: rgb(240 253 244) !important;
+    color: rgb(21 128 61) !important;
+}
+
+.fi-badge-warning {
+    background-color: rgb(255 251 235) !important;
+    color: rgb(180 83 9) !important;
+}
+
+.fi-badge-danger {
+    background-color: rgb(254 242 242) !important;
+    color: rgb(220 38 38) !important;
+}
+
+/* Tab styles */
+.fi-tabs-tab {
+    border-radius: 6px 6px 0 0 !important;
+}
+
+.fi-tabs-tab-active {
+    background-color: rgb(26 93 58) !important;
+    color: white !important;
+}
+
+/* Resource table actions */
+.fi-table-action {
+    border-radius: 6px !important;
+}
+
+.fi-table-action-btn {
+    transition: all 200ms ease-in-out !important;
+}
+
+.fi-table-action-btn:hover {
+    background-color: rgba(26, 93, 58, 0.1) !important;
+}
+
+/* Form sections */
+.fi-section {
+    border-radius: 8px !important;
+    border: 1px solid rgb(229 231 235) !important;
+}
+
+.fi-section-header {
+    background-color: rgb(249 250 251) !important;
+    border-bottom: 1px solid rgb(229 231 235) !important;
+}
+
+/* Stats widgets */
+.fi-stats-card {
+    border-radius: 8px !important;
+    background: linear-gradient(135deg, rgb(26 93 58) 0%, rgb(45 143 95) 100%) !important;
+    color: white !important;
+}
+
+.fi-stats-card-icon {
+    color: rgba(255, 255, 255, 0.8) !important;
+}
+
+/* Search input */
+.fi-global-search-input {
+    border-radius: 6px !important;
+    border-color: rgb(229 231 235) !important;
+}
+
+.fi-global-search-input:focus {
+    border-color: rgb(26 93 58) !important;
+}
+
+/* Dropdown styles */
+.fi-dropdown-panel {
+    border-radius: 8px !important;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Page header */
+.fi-header {
+    border-bottom: 1px solid rgb(229 231 235) !important;
+}
+
+.fi-header-heading {
+    color: rgb(31 41 55) !important;
+    font-weight: 600 !important;
+}
+
+/* Breadcrumb */
+.fi-breadcrumbs-item {
+    color: rgb(107 114 128) !important;
+}
+
+.fi-breadcrumbs-item-active {
+    color: rgb(26 93 58) !important;
+}
+
+/* Toggle switch */
+.fi-toggle {
+    background-color: rgb(229 231 235) !important;
+}
+
+.fi-toggle-checked {
+    background-color: rgb(26 93 58) !important;
+}
+
+/* Select dropdown */
+.fi-select-option:hover {
+    background-color: rgba(26, 93, 58, 0.1) !important;
+}
+
+.fi-select-option-selected {
+    background-color: rgb(26 93 58) !important;
+    color: white !important;
+}
+
+/* Pagination */
+.fi-pagination-item {
+    border-radius: 6px !important;
+}
+
+.fi-pagination-item-active {
+    background-color: rgb(26 93 58) !important;
+    border-color: rgb(26 93 58) !important;
+    color: white !important;
+}
+
+/* File upload */
+.fi-file-upload-dropzone {
+    border: 2px dashed rgb(229 231 235) !important;
+    border-radius: 8px !important;
+}
+
+.fi-file-upload-dropzone:hover {
+    border-color: rgb(26 93 58) !important;
+}
+
+/* Loading spinner */
+.fi-loading-indicator {
+    color: rgb(26 93 58) !important;
+}
+
+/* Custom scrollbar */
+.fi-scrollbar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.fi-scrollbar::-webkit-scrollbar-track {
+    background: rgb(243 244 246);
+    border-radius: 3px;
+}
+
+.fi-scrollbar::-webkit-scrollbar-thumb {
+    background: rgb(156 163 175);
+    border-radius: 3px;
+}
+
+.fi-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgb(26 93 58);
+}
+
+/* Action modals */
+.fi-action-modal {
+    border-radius: 8px !important;
+}
+
+.fi-action-modal-actions {
+    border-top: 1px solid rgb(229 231 235) !important;
+}
+
+/* Rich editor */
+.fi-rich-editor {
+    border-radius: 6px !important;
+    border-color: rgb(229 231 235) !important;
+}
+
+.fi-rich-editor:focus-within {
+    border-color: rgb(26 93 58) !important;
+}
+
+/* Responsive design improvements */
+@media (max-width: 768px) {
+    .fi-sidebar {
+        width: 100% !important;
+    }
+    
+    .fi-main {
+        margin-left: 0 !important;
+    }
+    
+    .fi-topbar {
+        padding: 1rem !important;
+    }
+}
+
+/* Focus states for accessibility */
+.fi-btn:focus,
+.fi-input:focus,
+.fi-select:focus {
+    outline: 2px solid rgb(26 93 58) !important;
+    outline-offset: 2px !important;
+}
+
+/* Print styles */
+@media print {
+    .fi-sidebar,
+    .fi-topbar,
+    .fi-btn {
+        display: none !important;
+    }
+    
+    .fi-main {
+        margin: 0 !important;
+    }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+    .fi-btn-primary {
+        background-color: #000 !important;
+        border-color: #000 !important;
+        color: #fff !important;
+    }
+    
+    .fi-input {
+        border-width: 2px !important;
+        border-color: #000 !important;
+    }
+}

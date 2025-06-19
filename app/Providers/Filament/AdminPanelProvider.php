@@ -17,6 +17,8 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use App\Filament\Pages\Auth\Login;
+use App\Filament\Pages\Auth\RequestPasswordReset;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -26,10 +28,26 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
-            ->login()
+            ->login(Login::class)
+            ->passwordReset(RequestPasswordReset::class)
             ->colors([
-                'primary' => Color::Amber,
+                'primary' => [
+                    50 => '#f0f9f4',
+                    100 => '#dcf4e3',
+                    200 => '#bbe6c9',
+                    300 => '#8bd3a3',
+                    400 => '#56b677',
+                    500 => '#2d8f5f',
+                    600 => '#1a5d3a',
+                    700 => '#164532',
+                    800 => '#133c2b',
+                    900 => '#103225',
+                    950 => '#071a12',
+                ],
             ])
+            ->brandName('Blazt Admin')
+            ->brandLogo(fn () => view('filament.brand-logo'))
+            ->viteTheme('resources/css/blazt-filament.css')
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
