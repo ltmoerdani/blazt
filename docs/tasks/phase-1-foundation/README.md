@@ -23,9 +23,9 @@ Phase ini fokus pada membangun foundation yang solid untuk platform WhatsApp Saa
 - `resources/views/auth/`
 
 #### 1.2 Basic Role System
-- [ ] Create basic roles (Admin, User)
-- [ ] Role-based access control setup
-- [ ] User role assignment
+- [x] Create basic roles (Admin, User)
+- [x] Role-based access control setup
+- [x] User role assignment
 
 **Dependencies**: 1.1
 

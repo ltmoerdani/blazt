@@ -9,10 +9,11 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 use App\Domain\AI\Models\AIConfiguration;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -63,6 +64,26 @@ class User extends Authenticatable implements MustVerifyEmail
     public function aiConfigurations(): HasOne
     {
         return $this->hasOne(AIConfiguration::class);
+    }
+
+    /**
+     * Check if user is admin
+     *
+     * @return bool
+     */
+    public function isAdmin(): bool
+    {
+        return $this->hasRole('admin');
+    }
+
+    /**
+     * Check if user is regular user
+     *
+     * @return bool
+     */
+    public function isUser(): bool
+    {
+        return $this->hasRole('user');
     }
 
     /**

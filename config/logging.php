@@ -1,7 +1,9 @@
 <?php
 
 // Log file path constant
-const LARAVEL_LOG_PATH = 'logs/laravel.log';
+if (!defined('LARAVEL_LOG_PATH')) {
+    define('LARAVEL_LOG_PATH', 'logs/laravel.log');
+}
 
 use Monolog\Handler\NullHandler;
 use Monolog\Handler\StreamHandler;
