@@ -1,33 +1,3 @@
-@import 'tailwindcss';
-
-/* Custom primary colors to match Swiftchats green theme */
-.text-primary-600 {
-    color: #059669;
-}
-
-.text-primary-500 {
-    color: #10b981;
-}
-
-.bg-primary {
-    background-color: #059669;
-}
-
-.bg-primary:hover {
-    background-color: #047857;
-}
-
-.focus\:ring-primary-300:focus {
-    --tw-ring-color: #6ee7b7;
-}
-
-.focus\:ring-primary-600:focus {
-    --tw-ring-color: #059669;
-}
-
-/* Make sure text-slate-500 has the right color */
-.text-slate-500 {
-    color: #64748b;
-}
-
-/* Removed invalid @source and @theme at-rules as per SonarLint issues. */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

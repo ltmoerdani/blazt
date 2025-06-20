@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             {{ __('Dashboard') }}
         </h2>
     </x-slot>
@@ -8,17 +8,17 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <!-- Welcome Section -->
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg mb-6">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6">
+                <div class="p-6 text-gray-900">
                     <div class="flex items-center justify-between">
                         <div>
                             <h3 class="text-lg font-medium">{{ __('Welcome back, :name!', ['name' => $dashboardData['user']->name]) }}</h3>
-                            <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                            <p class="text-sm text-gray-600 mt-1">
                                 {{ __('Manage your WhatsApp campaigns and contacts from here.') }}
                             </p>
                         </div>
                         <div class="text-right">
-                            <div class="text-sm text-gray-500 dark:text-gray-400">
+                            <div class="text-sm text-gray-500">
                                 {{ __('Subscription Plan') }}
                             </div>
                             <div class="text-lg font-semibold capitalize">
@@ -64,7 +64,7 @@
             <!-- Stats Grid -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
                 <!-- Total Contacts -->
-                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6">
                         <div class="flex items-center">
                             <div class="flex-shrink-0">
@@ -76,10 +76,10 @@
                             </div>
                             <div class="ml-5 w-0 flex-1">
                                 <dl>
-                                    <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">
+                                    <dt class="text-sm font-medium text-gray-500 truncate">
                                         {{ __('Total Contacts') }}
                                     </dt>
-                                    <dd class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                                    <dd class="text-lg font-medium text-gray-900">
                                         {{ number_format($dashboardData['total_contacts']) }}
                                     </dd>
                                 </dl>
@@ -89,7 +89,7 @@
                 </div>
 
                 <!-- Total Campaigns -->
-                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6">
                         <div class="flex items-center">
                             <div class="flex-shrink-0">
@@ -102,10 +102,10 @@
                             </div>
                             <div class="ml-5 w-0 flex-1">
                                 <dl>
-                                    <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">
+                                    <dt class="text-sm font-medium text-gray-500 truncate">
                                         {{ __('Total Campaigns') }}
                                     </dt>
-                                    <dd class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                                    <dd class="text-lg font-medium text-gray-900">
                                         {{ number_format($dashboardData['total_campaigns']) }}
                                     </dd>
                                 </dl>
@@ -115,7 +115,7 @@
                 </div>
 
                 <!-- Total Messages -->
-                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6">
                         <div class="flex items-center">
                             <div class="flex-shrink-0">
@@ -127,10 +127,10 @@
                             </div>
                             <div class="ml-5 w-0 flex-1">
                                 <dl>
-                                    <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">
+                                    <dt class="text-sm font-medium text-gray-500 truncate">
                                         {{ __('Total Messages') }}
                                     </dt>
-                                    <dd class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                                    <dd class="text-lg font-medium text-gray-900">
                                         {{ number_format($dashboardData['total_messages']) }}
                                     </dd>
                                 </dl>
@@ -140,7 +140,7 @@
                 </div>
 
                 <!-- Subscription Status -->
-                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6">
                         <div class="flex items-center">
                             <div class="flex-shrink-0">
@@ -152,10 +152,10 @@
                             </div>
                             <div class="ml-5 w-0 flex-1">
                                 <dl>
-                                    <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">
+                                    <dt class="text-sm font-medium text-gray-500 truncate">
                                         {{ __('Days Remaining') }}
                                     </dt>
-                                    <dd class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                                    <dd class="text-lg font-medium text-gray-900">
                                         @if($dashboardData['subscription_expires_at'])
                                             {{ $dashboardData['subscription_expires_at']->diffInDays(now()) }} {{ __('days') }}
                                         @else
@@ -170,13 +170,13 @@
             </div>
 
             <!-- Quick Actions -->
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6">
-                    <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">
                         {{ __('Quick Actions') }}
                     </h3>
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                        <a href="#" class="group relative rounded-lg p-6 bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                        <a href="#" class="group relative rounded-lg p-6 bg-gray-50 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
                             <div>
                                 <span class="rounded-lg inline-flex p-3 bg-indigo-50 text-indigo-700 ring-4 ring-white">
                                     <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -195,7 +195,7 @@
                             </div>
                         </a>
 
-                        <a href="#" class="group relative rounded-lg p-6 bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                        <a href="#" class="group relative rounded-lg p-6 bg-gray-50 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
                             <div>
                                 <span class="rounded-lg inline-flex p-3 bg-green-50 text-green-700 ring-4 ring-white">
                                     <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -214,7 +214,7 @@
                             </div>
                         </a>
 
-                        <a href="#" class="group relative rounded-lg p-6 bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                        <a href="#" class="group relative rounded-lg p-6 bg-gray-50 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
                             <div>
                                 <span class="rounded-lg inline-flex p-3 bg-purple-50 text-purple-700 ring-4 ring-white">
                                     <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

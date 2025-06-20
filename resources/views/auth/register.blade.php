@@ -1,6 +1,6 @@
 <x-guest-layout>
     <h1 class="text-2xl text-center">Create your account</h1>
-    <div class="text-center text-sm text-slate-500">Already have an account? <a class="text-sm text-primary-600 dark:text-primary-500 border-b hover:border-gray-500" href="{{ route('login') }}">Sign in here</a></div>
+    <div class="text-center text-sm text-slate-500">Already have an account? <a class="text-sm text-primary-600 border-b hover:border-gray-500" href="{{ route('login') }}">Sign in here</a></div>
 
     <form method="POST" action="{{ route('register') }}" class="mt-5">
         @csrf
