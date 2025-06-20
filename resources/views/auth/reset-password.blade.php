@@ -59,34 +59,10 @@
         <div class="mt-6">
             <button type="submit" class="rounded-md bg-primary px-3 py-3 text-sm text-white shadow-sm w-full">Reset Password</button>
         </div>
-    </form>
-</x-guest-layout>
-            </label>
-            <input id="password_confirmation"
-                class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-green-500 focus:border-green-500"
-                type="password"
-                name="password_confirmation"
-                required
-                autocomplete="new-password" />
-            <x-input-error :messages="$errors->get('password_confirmation')" class="mt-1" />
-        </div>
-
-        <!-- Submit Button -->
-        <div class="pt-2">
-            <button type="submit"
-                class="w-full flex justify-center py-3 px-4 border border-transparent rounded font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-150 ease-in-out">
-                {{ __('Reset Password') }}
-            </button>
-        </div>
 
         <!-- Footer Link -->
-        <div class="text-center">
-            <p class="text-sm text-gray-600">
-                {{ __('Remember your password?') }}
-                <a class="text-gray-900 hover:underline" href="{{ route('login') }}">
-                    {{ __('Back to sign in') }}
-                </a>
-            </p>
+        <div class="text-center mt-5">
+            <div class="text-sm text-slate-500">Remember your password? <a class="text-sm text-primary-600 dark:text-primary-500 border-b hover:border-gray-500" href="{{ route('login') }}">Back to sign in</a></div>
         </div>
     </form>
 </x-guest-layout>

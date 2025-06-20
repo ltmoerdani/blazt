@@ -14,16 +14,28 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans text-gray-900 antialiased">
-        <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100">
-            <div>
-                <a href="/" wire:navigate>
-                    <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
-                </a>
-            </div>
+    <body class="font-sans antialiased bg-white">
+        <div class="direction-ltr">
+            <div class="flex h-screen justify-center">
+                <div class="flex justify-center">
+                    <div class="w-[20em] mt-40">
+                        <!-- Logo -->
+                        <div class="flex justify-center mb-5">
+                            <a href="/">
+                                <div class="flex items-center space-x-2">
+                                    <div class="w-6 h-6 bg-green-600 rounded-full flex items-center justify-center">
+                                        <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd" />
+                                        </svg>
+                                    </div>
+                                    <span class="text-xl font-semibold text-gray-900">{{ config('app.name', 'Blazt') }}</span>
+                                </div>
+                            </a>
+                        </div>
 
-            <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg">
-                {{ $slot }}
+                        {{ $slot }}
+                    </div>
+                </div>
             </div>
         </div>
     </body>

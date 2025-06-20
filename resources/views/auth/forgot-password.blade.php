@@ -37,7 +37,7 @@
 
         <!-- Footer Link -->
         <div class="text-center mt-5">
-            <div class="text-sm text-slate-500">Remember your password? <a class="text-sm text-primary-600 border-b hover:border-gray-500" href="{{ route('login') }}">Back to sign in</a></div>
+            <div class="text-sm text-slate-500">Remember your password? <a class="text-sm text-primary-600 dark:text-primary-500 border-b hover:border-gray-500" href="{{ route('login') }}">Back to sign in</a></div>
         </div>
     </form>
 </x-guest-layout>

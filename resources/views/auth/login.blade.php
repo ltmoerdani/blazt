@@ -1,6 +1,6 @@
 <x-guest-layout>
     <h1 class="text-2xl text-center">Login to your account</h1>
-    <div class="text-center text-sm text-slate-500">Don't have an account? <a class="text-sm text-primary-600 border-b hover:border-gray-500" href="{{ route('register') }}">Create one here</a></div>
+    <div class="text-center text-sm text-slate-500">Don't have an account? <a class="text-sm text-primary-600 dark:text-primary-500 border-b hover:border-gray-500" href="{{ route('register') }}">Create one here</a></div>
     
     <!-- Session Status -->
     @if (session('status'))
@@ -52,14 +52,14 @@
                         aria-describedby="remember"
                         type="checkbox"
                         name="remember"
-                        class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300">
+                        class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800">
                 </div>
                 <div class="ml-3 text-sm">
-                    <label for="remember" class="text-gray-500">Remember me</label>
+                    <label for="remember" class="text-gray-500 dark:text-gray-300">Remember me</label>
                 </div>
             </div>
             @if (Route::has('password.request'))
-                <a class="text-sm text-primary-600 border-b hover:border-gray-500" href="{{ route('password.request') }}">Forgot password?</a>
+                <a class="text-sm text-primary-600 dark:text-primary-500 border-b hover:border-gray-500" href="{{ route('password.request') }}">Forgot password?</a>
             @endif
         </div>
 
