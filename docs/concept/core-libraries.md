@@ -19,13 +19,12 @@
 
 ## **Admin Panel & UI Components**
 
-### **Filament Ecosystem**
-- **filament/filament**: Admin panel utama untuk backend management
-- **filament/forms**: Form builder yang powerful untuk data input
-- **filament/tables**: Table builder untuk data listing dan management
-- **filament/notifications**: Toast notifications dan alert system
-- **filament/widgets**: Dashboard widgets untuk analytics display
-- **filament/actions**: Action buttons dan bulk operations
+### **Livewire + Alpine.js Stack**
+- **livewire/livewire**: Full-stack framework untuk building dynamic interfaces
+- **alpinejs**: Minimal JavaScript framework untuk client-side interactions
+- **tailwindcss**: Utility-first CSS framework untuk styling
+- **heroicons**: Icon set yang terintegrasi dengan Tailwind
+- **headlessui**: Accessible UI components tanpa styling
 
 ### **UI Enhancement Libraries**
 - **heroicons/heroicons**: Icon set yang terintegrasi dengan Tailwind

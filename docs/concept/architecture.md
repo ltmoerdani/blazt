@@ -283,8 +283,7 @@ whatsapp-saas/
 │
 ├── resources/
 │   ├── css/
-│   │   ├── app.css
-│   │   └── filament.css
+│   │   └── app.css
 │   ├── js/
 │   │   ├── app.js
 │   │   ├── components/

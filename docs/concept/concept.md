@@ -93,7 +93,7 @@ Dashboard yang menampilkan metrics penting secara real-time:
 #### **Frontend Technology**
 - **TALL Stack**: Kombinasi Tailwind CSS, Alpine.js, Laravel, dan Livewire untuk development yang rapid dan modern
 - **Livewire 3**: Komponen reactive yang memungkinkan real-time updates tanpa kompleksitas JavaScript framework
-- **Filament**: Admin panel yang powerful untuk backend management dengan UI yang clean
+- **Livewire + Alpine.js**: Modern reactive UI stack untuk interactive interfaces dengan minimal JavaScript
 
 #### **WhatsApp Integration**
 - **Baileys Library**: Library Node.js untuk koneksi ke WhatsApp Web protocol tanpa API official
