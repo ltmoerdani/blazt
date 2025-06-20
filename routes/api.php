@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\ContactController;
 use App\Http\Controllers\API\AnalyticsController;
 use App\Http\Controllers\API\PaymentController;
-use App\Http\Controllers\Webhook\WhatsAppWebhookController;
+use App\Http\Controllers\Api\WhatsApp\WebhookController as WhatsAppWebhookController;
 
 /*
 |--------------------------------------------------------------------------
@@ -99,7 +99,6 @@ Route::prefix('webhooks')->group(function () {
         Route::post('message-status', [WhatsAppWebhookController::class, 'messageStatus']);
         Route::post('session-status', [WhatsAppWebhookController::class, 'sessionStatus']);
         Route::post('qr-generated', [WhatsAppWebhookController::class, 'qrGenerated']);
-        Route::post('error', [WhatsAppWebhookController::class, 'errorReport']);
     });
     
     Route::prefix('payment')->group(function () {
@@ -116,4 +115,43 @@ Route::get('health', function () {
         'version' => '1.0.0',
         'environment' => app()->environment(),
     ]);
+});
+
+// Test Routes for QR Code
+Route::prefix('test')->group(function () {
+    Route::get('qr-code/{accountId}', function ($accountId) {
+        $session = \App\Domain\WhatsApp\Models\WhatsAppSession::where('whatsapp_account_id', $accountId)->first();
+        
+        if (!$session) {
+            return response()->json(['error' => 'Session not found'], 404);
+        }
+        
+        return response()->json([
+            'qr_code' => $session->qr_code,
+            'status' => $session->status,
+            'age' => $session->updated_at ? $session->updated_at->diffInSeconds() : null,
+            'session_id' => $session->session_id,
+        ]);
+    });
+    
+    Route::get('status/{accountId}', function ($accountId) {
+        $account = \App\Domain\WhatsApp\Models\WhatsAppAccount::find($accountId);
+        $session = \App\Domain\WhatsApp\Models\WhatsAppSession::where('whatsapp_account_id', $accountId)->first();
+        
+        return response()->json([
+            'account' => $account ? [
+                'id' => $account->id,
+                'phone_number' => $account->phone_number,
+                'status' => $account->status,
+                'display_name' => $account->display_name,
+            ] : null,
+            'session' => $session ? [
+                'id' => $session->id,
+                'session_id' => $session->session_id,
+                'status' => $session->status,
+                'has_qr_code' => !empty($session->qr_code),
+                'updated_at' => $session->updated_at,
+            ] : null,
+        ]);
+    });
 });

@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatsApp QR Code Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+        }
+        .qr-container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin: 20px 0;
+        }
+        .qr-code {
+            max-width: 300px;
+            height: auto;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+        }
+        .status {
+            margin: 20px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .status.connecting {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        .instructions {
+            text-align: left;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .refresh-btn {
+            background: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        .refresh-btn:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>🚀 Blazt WhatsApp Connection Test</h1>
+    
+    <div class="status connecting">
+        <span id="connectionStatus">📱 Ready to connect WhatsApp account (ID: 3)</span>
+    </div>
+
+    <div class="qr-container">
+        <h3>Scan this QR Code with WhatsApp</h3>
+        <img id="qrCode" class="qr-code" alt="WhatsApp QR Code">
+        <div id="qrStatus" style="margin-top: 10px; color: #666;">
+            Loading QR code...
+        </div>
+    </div>
+
+    <div class="instructions">
+        <h4>📋 Instructions:</h4>
+        <ol>
+            <li><strong>Open WhatsApp</strong> on your smartphone</li>
+            <li>Go to <strong>Settings ⚙️</strong></li>
+            <li>Tap <strong>"Linked Devices"</strong></li>
+            <li>Tap <strong>"Link a Device"</strong></li>
+            <li><strong>Scan the QR code</strong> above</li>
+        </ol>
+        
+        <p><strong>⚠️ Important:</strong></p>
+        <ul>
+            <li>Make sure both your phone and computer have internet connection</li>
+            <li>QR code expires after 30 seconds - click refresh if needed</li>
+            <li>Keep the phone and computer on same network if possible</li>
+        </ul>
+    </div>
+
+    <button class="refresh-btn" onclick="refreshQR()">🔄 Refresh QR Code</button>
+    <button class="refresh-btn" onclick="checkStatus()">📊 Check Status</button>
+    <button class="refresh-btn" onclick="disconnectAccount()" style="background: #dc3545;">📴 Disconnect</button>
+    <button class="refresh-btn" onclick="reconnectAccount()" style="background: #28a745;">🔗 Reconnect</button>
+
+    <div id="logs" style="margin-top: 20px; text-align: left; background: #f1f1f1; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 12px; max-height: 200px; overflow-y: auto;">
+        <strong>Connection Logs:</strong><br>
+        <span id="logContent">Initializing...</span>
+    </div>
+
+    <script>
+        const qrCodeImg = document.getElementById('qrCode');
+        const qrStatus = document.getElementById('qrStatus');
+        const logContent = document.getElementById('logContent');
+        
+        function addLog(message) {
+            const timestamp = new Date().toLocaleTimeString();
+            logContent.innerHTML += `<br>[${timestamp}] ${message}`;
+            document.getElementById('logs').scrollTop = document.getElementById('logs').scrollHeight;
+        }
+        
+        async function loadQRCode() {
+            try {
+                addLog('🔄 Checking connection status from Enhanced Handler...');
+                
+                // First check connection status
+                const statusResponse = await fetch('http://localhost:3001/status/3');
+                const statusData = await statusResponse.json();
+                
+                const connectionStatus = document.getElementById('connectionStatus');
+                
+                if (statusData.success && statusData.connected) {
+                    // Connection is established
+                    qrCodeImg.style.display = 'none';
+                    qrStatus.innerHTML = `
+                        <div style="color: #28a745; font-size: 18px; margin: 20px 0;">
+                            ✅ <strong>WhatsApp Connected Successfully!</strong><br>
+                            <small>Account ID: ${statusData.account_id} | Attempts: ${statusData.attempts}</small>
+                        </div>
+                    `;
+                    connectionStatus.innerHTML = '✅ WhatsApp Connected Successfully!';
+                    connectionStatus.parentElement.style.backgroundColor = '#d4edda';
+                    connectionStatus.parentElement.style.color = '#155724';
+                    connectionStatus.parentElement.style.borderColor = '#c3e6cb';
+                    
+                    addLog('🎉 WhatsApp connection established successfully!');
+                    clearInterval(window.refreshInterval); // Stop auto-refresh
+                    return;
+                }
+                
+                // If not connected, try to get QR code
+                connectionStatus.innerHTML = '🔄 Connecting to WhatsApp...';
+                connectionStatus.parentElement.style.backgroundColor = '#fff3cd';
+                connectionStatus.parentElement.style.color = '#856404';
+                
+                addLog('🔄 Fetching QR code from Enhanced Handler...');
+                const response = await fetch('http://localhost:3001/qr-code/3');
+                const data = await response.json();
+                
+                if (data.success && data.qr_code) {
+                    qrCodeImg.src = data.qr_code;
+                    qrCodeImg.style.display = 'block';
+                    qrStatus.textContent = `✅ QR Code loaded from Enhanced Handler`;
+                    qrStatus.style.color = '#28a745';
+                    addLog('✅ QR code loaded successfully from Enhanced Handler');
+                } else {
+                    qrCodeImg.style.display = 'none';
+                    qrStatus.textContent = '🔄 Waiting for QR code generation...';
+                    qrStatus.style.color = '#ffc107';
+                    addLog('⏳ Waiting for QR code to be generated...');
+                }
+            } catch (error) {
+                qrStatus.textContent = '❌ Error loading QR code';
+                qrStatus.style.color = '#dc3545';
+                addLog('❌ Error: ' + error.message);
+            }
+        }
+        
+        async function refreshQR() {
+            try {
+                addLog('🔄 Requesting new QR code with Enhanced Handler...');
+                qrStatus.textContent = 'Generating new QR code with Enhanced handler...';
+                qrStatus.style.color = '#ffc107';
+                
+                const response = await fetch('http://localhost:3001/connect-account', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        accountId: "3",
+                        phoneNumber: "62816108641"
+                    })
+                });
+                
+                const result = await response.json();
+                addLog('QR generation response (V2): ' + JSON.stringify(result));
+                
+                // Wait a bit for QR to be generated
+                setTimeout(loadQRCode, 3000);
+                
+            } catch (error) {
+                addLog('Error refreshing QR: ' + error.message);
+            }
+        }
+        
+        async function checkStatus() {
+            try {
+                addLog('📊 Checking connection status from Enhanced Handler...');
+                const response = await fetch('http://localhost:3001/status/3');
+                const data = await response.json();
+                addLog('📊 Enhanced Status: ' + JSON.stringify(data));
+                
+                // Also check Laravel status
+                const laravelResponse = await fetch('/api/test/status/3');
+                const laravelData = await laravelResponse.json();
+                addLog('📊 Laravel Status: ' + JSON.stringify(laravelData));
+            } catch (error) {
+                addLog('❌ Error checking status: ' + error.message);
+            }
+        }
+        
+        async function disconnectAccount() {
+            try {
+                addLog('📴 Disconnecting WhatsApp account...');
+                const response = await fetch('http://localhost:3001/disconnect-account', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        accountId: "3"
+                    })
+                });
+                
+                const result = await response.json();
+                addLog('📴 Disconnect response: ' + JSON.stringify(result));
+                
+                // Restart auto-refresh to check for new QR code
+                if (window.refreshInterval) {
+                    clearInterval(window.refreshInterval);
+                }
+                window.refreshInterval = setInterval(() => {
+                    addLog('🔄 Auto-checking status...');
+                    loadQRCode();
+                }, 10000);
+                
+                // Immediate check
+                setTimeout(loadQRCode, 2000);
+                
+            } catch (error) {
+                addLog('❌ Error disconnecting: ' + error.message);
+            }
+        }
+        
+        async function reconnectAccount() {
+            try {
+                addLog('🔗 Reconnecting WhatsApp account...');
+                const response = await fetch('http://localhost:3001/connect-account', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        accountId: "3",
+                        phoneNumber: "62816108641"
+                    })
+                });
+                
+                const result = await response.json();
+                addLog('🔗 Reconnect response: ' + JSON.stringify(result));
+                
+                // Restart auto-refresh
+                if (window.refreshInterval) {
+                    clearInterval(window.refreshInterval);
+                }
+                window.refreshInterval = setInterval(() => {
+                    addLog('🔄 Auto-checking status...');
+                    loadQRCode();
+                }, 10000);
+                
+                // Wait for QR to be generated
+                setTimeout(loadQRCode, 3000);
+                
+            } catch (error) {
+                addLog('❌ Error reconnecting: ' + error.message);
+            }
+        }
+        
+        // Load QR code on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            addLog('🚀 Page loaded, checking Enhanced Handler status...');
+            loadQRCode();
+            
+            // Auto-refresh every 10 seconds to get latest status/QR code
+            window.refreshInterval = setInterval(() => {
+                addLog('🔄 Auto-checking status...');
+                loadQRCode();
+            }, 10000);
+        });
+    </script>
+</body>
+</html>

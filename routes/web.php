@@ -7,6 +7,7 @@ use App\Http\Controllers\Dashboard\CampaignController;
 use App\Http\Controllers\Dashboard\ContactController;
 use App\Http\Controllers\Dashboard\SettingsController;
 use App\Http\Controllers\Dashboard\WhatsAppAccountController;
+use App\Http\Controllers\Admin\WhatsAppEnhancedController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\ConfirmablePasswordController;
 use App\Http\Controllers\Auth\EmailVerificationNotificationController;
@@ -97,4 +98,12 @@ Route::middleware(['auth', 'verified'])->prefix('dashboard')->name('dashboard.')
     Route::resource('whatsapp-accounts', WhatsAppAccountController::class);
     Route::post('whatsapp-accounts/{whatsAppAccount}/connect', [WhatsAppAccountController::class, 'connect'])->name('whatsapp-accounts.connect');
     Route::post('whatsapp-accounts/{whatsAppAccount}/disconnect', [WhatsAppAccountController::class, 'disconnect'])->name('whatsapp-accounts.disconnect');
+});
+
+// Admin WhatsApp Enhanced Handler Routes
+Route::middleware(['auth'])->prefix('admin/whatsapp')->group(function () {
+    Route::get('qr-code/{accountId}', [WhatsAppEnhancedController::class, 'getQRCode']);
+    Route::get('qr-account/{recordId}', [WhatsAppEnhancedController::class, 'getQRCodeForAccount']);
+    Route::get('status/{accountId}', [WhatsAppEnhancedController::class, 'getStatus']);
+    Route::post('update-status/{recordId}', [WhatsAppEnhancedController::class, 'updateStatus']);
 });

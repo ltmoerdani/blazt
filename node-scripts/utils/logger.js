@@ -111,6 +111,10 @@ const logger = winston.createLogger({
     ]
 });
 
+// Add Baileys-compatible methods
+logger.trace = (...args) => logger.debug(...args);
+logger.child = () => logger; // Return the same logger instance
+
 // Add request logging method
 logger.logRequest = (req, res, responseTime) => {
     logger.info('HTTP Request', {

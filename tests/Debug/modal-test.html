@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick Modal Test</title>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .qr-box { border: 1px solid #ddd; padding: 20px; margin: 20px 0; text-align: center; }
+        img { max-width: 300px; height: auto; }
+        button { padding: 10px 20px; margin: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Admin Panel QR Modal Test</h1>
+    
+    <div x-data="testQRCode()" x-init="init()">
+        <div class="qr-box">
+            <h3>Status: <span x-text="status"></span></h3>
+            <div x-show="loading">Loading QR code...</div>
+            <div x-show="qrCode && !loading">
+                <img :src="qrCode" alt="QR Code" />
+                <p>QR Code loaded successfully!</p>
+            </div>
+            <div x-show="error">
+                <p style="color: red;">Error: <span x-text="errorMessage"></span></p>
+            </div>
+        </div>
+        
+        <button @click="loadQR()">Load QR Code</button>
+        <button @click="checkStatus()">Check Status</button>
+        
+        <div id="logs" style="background: #f5f5f5; padding: 10px; margin-top: 20px; font-family: monospace; font-size: 12px;">
+            <strong>Logs:</strong><br>
+            <span x-text="logs"></span>
+        </div>
+    </div>
+
+    <script>
+        function testQRCode() {
+            return {
+                accountId: 'account_3',
+                qrCode: null,
+                loading: false,
+                error: false,
+                errorMessage: '',
+                status: 'ready',
+                logs: 'Initialized...',
+
+                init() {
+                    this.addLog('Test modal initialized');
+                    this.loadQR();
+                },
+
+                addLog(message) {
+                    const timestamp = new Date().toLocaleTimeString();
+                    this.logs += `\n[${timestamp}] ${message}`;
+                },
+
+                async loadQR() {
+                    this.loading = true;
+                    this.error = false;
+                    this.addLog('Loading QR code from Enhanced Handler...');
+
+                    try {
+                        const response = await fetch(`http://localhost:3001/qr-code/${this.accountId}`);
+                        const data = await response.json();
+
+                        this.addLog(`Response: ${JSON.stringify(data)}`);
+
+                        if (data.success && data.qr_code) {
+                            this.qrCode = data.qr_code;
+                            this.status = 'QR loaded';
+                            this.addLog('✅ QR code loaded successfully');
+                        } else {
+                            throw new Error(data.message || 'No QR code available');
+                        }
+                    } catch (error) {
+                        this.error = true;
+                        this.errorMessage = error.message;
+                        this.status = 'Error';
+                        this.addLog(`❌ Error: ${error.message}`);
+                    } finally {
+                        this.loading = false;
+                    }
+                },
+
+                async checkStatus() {
+                    this.addLog('Checking status...');
+                    try {
+                        const response = await fetch(`http://localhost:3001/status/${this.accountId}`);
+                        const data = await response.json();
+                        this.addLog(`Status: ${JSON.stringify(data)}`);
+                    } catch (error) {
+                        this.addLog(`Status error: ${error.message}`);
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+</html>

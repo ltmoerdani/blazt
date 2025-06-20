@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | WhatsApp Service Configuration
@@ -193,4 +192,15 @@ return [
         'debug_webhooks' => env('WHATSAPP_DEBUG_WEBHOOKS', false),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Enhanced Handler Configuration
+    |--------------------------------------------------------------------------
+    |
+    | Configuration for the Enhanced WhatsApp Baileys Handler
+    |
+    */
+
+    'enhanced_handler_url' => env('WHATSAPP_ENHANCED_HANDLER_URL', 'http://localhost:3001'),
+    'api_timeout' => env('WHATSAPP_API_TIMEOUT', 30),
 ];

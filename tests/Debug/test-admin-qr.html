@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Admin QR Endpoint</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .test-container {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        .qr-image {
+            max-width: 300px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .logs {
+            background: #f1f1f1;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔧 Admin QR Endpoint Test</h1>
+    
+    <div class="test-container">
+        <h3>Test Results:</h3>
+        <div id="results">No test run yet</div>
+        <div id="qr-display"></div>
+    </div>
+
+    <div>
+        <button onclick="testEndpoint()">Test QR Endpoint</button>
+        <button onclick="testStatus()">Test Status</button>
+        <button onclick="testDirect()">Test Direct Enhanced Handler</button>
+    </div>
+
+    <div id="logs" class="logs">
+        <strong>Test Logs:</strong><br>
+        <span id="logContent">Ready for testing...</span>
+    </div>
+
+    <script>
+        function addLog(message) {
+            const timestamp = new Date().toLocaleTimeString();
+            const logContent = document.getElementById('logContent');
+            logContent.innerHTML += `<br>[${timestamp}] ${message}`;
+            document.getElementById('logs').scrollTop = document.getElementById('logs').scrollHeight;
+        }
+        
+        async function testEndpoint() {
+            addLog('🔍 Testing Laravel admin QR endpoint...');
+            
+            try {
+                const response = await fetch('/admin/whatsapp/qr-account/3', {
+                    credentials: 'include',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                addLog(`Response status: ${response.status}`);
+                addLog(`Response headers: ${JSON.stringify([...response.headers.entries()])}`);
+                
+                const data = await response.text();
+                addLog(`Response body (first 200 chars): ${data.substring(0, 200)}`);
+                
+                if (response.headers.get('content-type')?.includes('application/json')) {
+                    const jsonData = JSON.parse(data);
+                    document.getElementById('results').innerHTML = `
+                        <strong>Laravel Response:</strong><br>
+                        Success: ${jsonData.success}<br>
+                        Connected: ${jsonData.connected || 'N/A'}<br>
+                        QR Available: ${jsonData.qr_code ? 'Yes' : 'No'}<br>
+                        Error: ${jsonData.error || 'None'}
+                    `;
+                    
+                    if (jsonData.qr_code) {
+                        document.getElementById('qr-display').innerHTML = `
+                            <h4>QR Code:</h4>
+                            <img src="${jsonData.qr_code}" class="qr-image" alt="QR Code">
+                        `;
+                    }
+                } else {
+                    document.getElementById('results').innerHTML = `
+                        <strong>Non-JSON Response (probably redirect):</strong><br>
+                        Status: ${response.status}<br>
+                        Body: ${data.substring(0, 500)}...
+                    `;
+                }
+                
+            } catch (error) {
+                addLog(`❌ Error: ${error.message}`);
+                document.getElementById('results').innerHTML = `<strong>Error:</strong> ${error.message}`;
+            }
+        }
+        
+        async function testStatus() {
+            addLog('📊 Testing Laravel status endpoint...');
+            
+            try {
+                const response = await fetch('/admin/whatsapp/status/3', {
+                    credentials: 'include',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                addLog(`Status response: ${JSON.stringify(data)}`);
+                
+                document.getElementById('results').innerHTML = `
+                    <strong>Status Response:</strong><br>
+                    ${JSON.stringify(data, null, 2)}
+                `;
+                
+            } catch (error) {
+                addLog(`❌ Status error: ${error.message}`);
+            }
+        }
+        
+        async function testDirect() {
+            addLog('🔗 Testing direct Enhanced Handler...');
+            
+            try {
+                const response = await fetch('http://localhost:3001/qr-code/3');
+                const data = await response.json();
+                
+                addLog(`Direct response: ${JSON.stringify(data)}`);
+                
+                document.getElementById('results').innerHTML = `
+                    <strong>Direct Enhanced Handler:</strong><br>
+                    Success: ${data.success}<br>
+                    QR Available: ${data.qr_code ? 'Yes' : 'No'}
+                `;
+                
+                if (data.qr_code) {
+                    document.getElementById('qr-display').innerHTML = `
+                        <h4>Direct QR Code:</h4>
+                        <img src="${data.qr_code}" class="qr-image" alt="QR Code">
+                    `;
+                }
+                
+            } catch (error) {
+                addLog(`❌ Direct error: ${error.message}`);
+            }
+        }
+        
+        // Auto test on load
+        document.addEventListener('DOMContentLoaded', function() {
+            addLog('🚀 Page loaded, ready for testing');
+        });
+    </script>
+</body>
+</html>

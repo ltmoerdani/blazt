@@ -91,11 +91,12 @@ class ApiClient {
         }
     }
 
-    async notifySessionStatus(accountId, status, userData = null) {
+    async notifySessionStatus(accountId, status, sessionId = null, userData = null) {
         try {
             const response = await this.client.post('/api/webhooks/whatsapp/session-status', {
                 account_id: accountId,
                 status: status,
+                session_id: sessionId,
                 user_data: userData,
                 timestamp: new Date().toISOString()
             });
@@ -111,11 +112,12 @@ class ApiClient {
         }
     }
 
-    async notifyQRGenerated(accountId, qrCodeData) {
+    async notifyQRGenerated(accountId, qrCodeData, sessionId = null) {
         try {
             const response = await this.client.post('/api/webhooks/whatsapp/qr-generated', {
                 account_id: accountId,
                 qr_code: qrCodeData,
+                session_id: sessionId,
                 timestamp: new Date().toISOString()
             });
             
@@ -124,6 +126,26 @@ class ApiClient {
             logger.error('Failed to notify QR generation to Laravel:', {
                 error: error.message,
                 accountId
+            });
+            // Don't throw error here to avoid breaking the flow
+        }
+    }
+
+    async notifyConnectionStatus(accountId, status, message = null) {
+        try {
+            const response = await this.client.post('/api/webhooks/whatsapp/session-status', {
+                account_id: accountId,
+                status: status,
+                message: message,
+                timestamp: new Date().toISOString()
+            });
+            
+            return response.data;
+        } catch (error) {
+            logger.error('Failed to notify connection status to Laravel:', {
+                error: error.message,
+                accountId,
+                status
             });
             // Don't throw error here to avoid breaking the flow
         }

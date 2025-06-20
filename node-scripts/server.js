@@ -4,6 +4,9 @@ const helmet = require('helmet');
 require('dotenv').config();
 
 const WhatsAppHandler = require('./whatsapp/baileys-handler');
+const WhatsAppHandlerV2 = require('./whatsapp/baileys-handler-v2');
+const WhatsAppHandlerV3 = require('./whatsapp/baileys-handler-v3');
+const WhatsAppHandlerStable = require('./whatsapp/baileys-handler-stable');
 const logger = require('./utils/logger');
 
 const app = express();
@@ -15,8 +18,20 @@ app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
-// Initialize WhatsApp handler
+// Initialize WhatsApp handlers
 const whatsappHandler = new WhatsAppHandler();
+const whatsappHandlerV2 = new WhatsAppHandlerV2();
+const whatsappHandlerV3 = new WhatsAppHandlerV3();
+const whatsappHandlerStable = new WhatsAppHandlerStable();
+
+// Initialize all handlers
+(async () => {
+    await whatsappHandler.init();
+    await whatsappHandlerV2.init();
+    await whatsappHandlerV3.init();
+    await whatsappHandlerStable.init();
+    logger.info('All WhatsApp handlers initialized (V1, V2, V3, Stable)');
+})();
 
 // Routes
 app.get('/health', (req, res) => {
@@ -27,7 +42,93 @@ app.get('/health', (req, res) => {
     });
 });
 
-// Connect WhatsApp account
+// Connect WhatsApp account (Stable - Minimal Config)
+app.post('/connect-account-stable', async (req, res) => {
+    try {
+        const { accountId, phoneNumber } = req.body;
+        
+        if (!accountId || !phoneNumber) {
+            return res.status(400).json({ 
+                error: 'Account ID and phone number are required' 
+            });
+        }
+
+        const result = await whatsappHandlerStable.connectAccount(accountId, phoneNumber);
+        res.json(result);
+    } catch (error) {
+        logger.error('Error connecting account (Stable):', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Connect WhatsApp account (V3 - Enhanced Session Management)
+app.post('/connect-account-v3', async (req, res) => {
+    try {
+        const { accountId, phoneNumber } = req.body;
+        
+        if (!accountId || !phoneNumber) {
+            return res.status(400).json({ 
+                error: 'Account ID and phone number are required' 
+            });
+        }
+
+        const result = await whatsappHandlerV3.connectAccount(accountId, phoneNumber);
+        res.json(result);
+    } catch (error) {
+        logger.error('Error connecting account (V3):', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Get account status (V3)
+app.get('/account-status-v3/:accountId', async (req, res) => {
+    try {
+        const { accountId } = req.params;
+        const status = await whatsappHandlerV3.getAccountStatus(accountId);
+        res.json(status);
+    } catch (error) {
+        logger.error('Error getting account status (V3):', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Force cleanup account (V3)
+app.post('/cleanup-account-v3', async (req, res) => {
+    try {
+        const { accountId } = req.body;
+        
+        if (!accountId) {
+            return res.status(400).json({ 
+                error: 'Account ID is required' 
+            });
+        }
+
+        await whatsappHandlerV3.forceCleanupAccount(accountId);
+        res.json({ success: true, message: 'Account cleanup completed' });
+    } catch (error) {
+        logger.error('Error cleaning up account (V3):', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+app.post('/connect-account-v2', async (req, res) => {
+    try {
+        const { accountId, phoneNumber } = req.body;
+        
+        if (!accountId || !phoneNumber) {
+            return res.status(400).json({ 
+                error: 'Account ID and phone number are required' 
+            });
+        }
+
+        const result = await whatsappHandlerV2.connectAccount(accountId, phoneNumber);
+        res.json(result);
+    } catch (error) {
+        logger.error('Error connecting account (V2):', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Connect WhatsApp account (Original)
 app.post('/connect-account', async (req, res) => {
     try {
         const { accountId, phoneNumber } = req.body;

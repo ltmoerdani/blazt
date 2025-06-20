@@ -5,6 +5,7 @@ namespace App\Domain\WhatsApp\Services;
 use App\Domain\User\Models\User;
 use App\Domain\WhatsApp\Models\WhatsAppAccount;
 use App\Domain\WhatsApp\Models\WhatsAppMessage;
+use App\Domain\WhatsApp\Models\WhatsAppSession;
 use App\Domain\WhatsApp\Repositories\WhatsAppAccountRepository;
 use App\Domain\Contact\Models\Contact;
 use App\Interfaces\WhatsApp\SessionManagerInterface;
@@ -66,29 +67,41 @@ class WhatsAppService implements WhatsAppServiceInterface
 
     public function connectAccount(User $user, string $phoneNumber, ?string $displayName = null): WhatsAppAccount
     {
-        // Create or find existing account
-        $whatsappAccount = $this->whatsAppAccountRepository->findByPhoneNumber($phoneNumber);
-        
-        if (!$whatsappAccount) {
-            // Create new account
-            $whatsappAccount = $this->createAccount($user, [
+        try {
+            // Create or find existing account
+            $whatsappAccount = $this->whatsAppAccountRepository->findByPhoneNumber($phoneNumber);
+            
+            if (!$whatsappAccount) {
+                // Create new account
+                $whatsappAccount = $this->createAccount($user, [
+                    'phone_number' => $phoneNumber,
+                    'display_name' => $displayName ?? "WhatsApp {$phoneNumber}",
+                    'status' => WhatsAppAccount::STATUS_DISCONNECTED
+                ]);
+            } elseif ($whatsappAccount->user_id !== $user->id) {
+                throw new WhatsAppAccountUnauthorizedException('WhatsApp account unauthorized.');
+            }
+
+            // Initiate connection through session manager
+            $session = $this->sessionManager->initiateConnection($whatsappAccount);
+
+            Log::info("WhatsApp account connection initiated", [
+                'user_id' => $user->id,
+                'account_id' => $whatsappAccount->id,
                 'phone_number' => $phoneNumber,
-                'display_name' => $displayName,
-                'status' => 'connecting'
+                'session_id' => $session->session_id,
             ]);
-        } elseif ($whatsappAccount->user_id !== $user->id) {
-            throw new WhatsAppAccountUnauthorizedException('WhatsApp account unauthorized.');
+
+            return $whatsappAccount;
+        } catch (Exception $e) {
+            Log::error("Failed to connect WhatsApp account", [
+                'user_id' => $user->id,
+                'phone_number' => $phoneNumber,
+                'error' => $e->getMessage(),
+            ]);
+
+            throw $e;
         }
-
-        // Generate QR code for connection
-        $qrCodePath = $this->qrCodeGenerator->generateQRCode($whatsappAccount);
-        $whatsappAccount->update([
-            'status' => 'connecting',
-            'qr_code_path' => $qrCodePath,
-            'last_connected_at' => null
-        ]);
-
-        return $whatsappAccount;
     }
 
     public function disconnectAccount(WhatsAppAccount $account): bool
@@ -101,15 +114,16 @@ class WhatsAppService implements WhatsAppServiceInterface
 
     public function getQRCode(WhatsAppAccount $account): ?string
     {
-        if ($account->status === 'connecting' && $account->qr_code_path) {
-            return $account->qr_code_path;
-        }
+        // Get current session
+        $session = $this->sessionManager->getAccountSession($account);
         
-        // Generate new QR code if needed
-        if ($account->status === 'disconnected') {
-            $qrCodePath = $this->qrCodeGenerator->generate($account);
-            $account->update(['qr_code_path' => $qrCodePath, 'status' => 'connecting']);
-            return $qrCodePath;
+        if (!$session) {
+            return null;
+        }
+
+        // Return QR code if session is connecting and has QR code
+        if ($session->status === WhatsAppSession::STATUS_CONNECTING && $session->qr_code) {
+            return $session->qr_code;
         }
         
         return null;

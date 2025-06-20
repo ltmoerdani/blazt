@@ -37,12 +37,29 @@ class BaileysHandler {
         try {
             logger.info(`Connecting WhatsApp account: ${accountId} (${phoneNumber})`);
 
+            // Clean up any existing session first
             if (this.sessions.has(accountId)) {
-                logger.info(`Account ${accountId} already connected`);
-                return { success: true, status: 'already_connected' };
+                logger.info(`Cleaning up existing session for account ${accountId}`);
+                const existingSocket = this.sessions.get(accountId);
+                try {
+                    existingSocket.end();
+                } catch (e) {
+                    logger.warn('Error ending existing socket:', e.message);
+                }
+                this.sessions.delete(accountId);
+                this.qrCodes.delete(accountId);
             }
 
             const sessionDir = path.join(this.sessionsDir, accountId.toString());
+            
+            // Clean session directory if exists
+            try {
+                await fs.rm(sessionDir, { recursive: true, force: true });
+                logger.info(`Cleaned session directory for account ${accountId}`);
+            } catch (e) {
+                logger.warn('Error cleaning session directory:', e.message);
+            }
+            
             await fs.mkdir(sessionDir, { recursive: true });
 
             const { state, saveCreds } = await useMultiFileAuthState(sessionDir);
@@ -51,9 +68,29 @@ class BaileysHandler {
                 auth: state,
                 printQRInTerminal: false,
                 logger: logger,
-                browser: ['Blazt WhatsApp Bot', 'Chrome', '1.0.0'],
+                browser: ['Chrome (Linux)', '', ''],
                 defaultQueryTimeoutMs: 60000,
+                connectTimeoutMs: 60000,
+                qrTimeout: 40000,
+                markOnlineOnConnect: false,
+                syncFullHistory: false,
+                shouldSyncHistoryMessage: () => false,
+                shouldIgnoreJid: (jid) => false,
+                linkPreviewImageThumbnailWidth: 192,
+                generateHighQualityLinkPreview: false,
+                retryRequestDelayMs: 250,
+                maxMsgRetryCount: 5,
+                fireInitQueries: false,
+                emitOwnEvents: false,
+                getMessage: async (key) => {
+                    return { conversation: '' };
+                },
             });
+
+            // Generate session ID for this connection
+            const sessionId = `session_${accountId}_${Date.now()}`;
+            let qrRetryCount = 0;
+            const maxQrRetries = 3;
 
             // Handle QR code generation
             sock.ev.on('connection.update', async (update) => {
@@ -61,7 +98,21 @@ class BaileysHandler {
 
                 if (qr) {
                     try {
-                        const qrCodeDataURL = await QRCode.toDataURL(qr);
+                        qrRetryCount++;
+                        logger.info(`Generating QR code for account ${accountId} (attempt ${qrRetryCount}/${maxQrRetries})`);
+                        
+                        const qrCodeDataURL = await QRCode.toDataURL(qr, {
+                            errorCorrectionLevel: 'L', // Lower error correction for smaller QR
+                            type: 'image/png',
+                            quality: 0.92,
+                            margin: 2,
+                            color: {
+                                dark: '#000000',
+                                light: '#FFFFFF'
+                            },
+                            width: 512 // Larger QR code
+                        });
+                        
                         const qrCodePath = path.join(this.qrDir, `${accountId}.png`);
                         
                         // Save QR code as base64 data URL
@@ -71,10 +122,14 @@ class BaileysHandler {
                         const base64Data = qrCodeDataURL.replace(/^data:image\/png;base64,/, '');
                         await fs.writeFile(qrCodePath, base64Data, 'base64');
 
-                        logger.info(`QR code generated for account ${accountId}`);
+                        logger.info(`QR code generated successfully for account ${accountId}`);
+                        logger.info(`QR string length: ${qr.length}`);
                         
-                        // Notify Laravel app about QR code
-                        await this.apiClient.notifyQRGenerated(accountId, qrCodeDataURL);
+                        // Notify Laravel app about QR code immediately
+                        await this.apiClient.notifyQRGenerated(accountId, qrCodeDataURL, sessionId);
+                        
+                        // Don't auto-refresh QR - let WhatsApp handle timing
+                        
                     } catch (error) {
                         logger.error('Error generating QR code:', error);
                     }
@@ -96,7 +151,7 @@ class BaileysHandler {
                         this.qrCodes.delete(accountId);
                         
                         // Notify Laravel app about disconnection
-                        await this.apiClient.notifySessionStatus(accountId, 'disconnected');
+                        await this.apiClient.notifySessionStatus(accountId, 'disconnected', sessionId);
                     }
                 } else if (connection === 'open') {
                     logger.info(`WhatsApp connected successfully for account ${accountId}`);
@@ -105,7 +160,7 @@ class BaileysHandler {
                     this.qrCodes.delete(accountId);
                     
                     // Notify Laravel app about successful connection
-                    await this.apiClient.notifySessionStatus(accountId, 'connected');
+                    await this.apiClient.notifySessionStatus(accountId, 'connected', sessionId);
                 }
             });
 
