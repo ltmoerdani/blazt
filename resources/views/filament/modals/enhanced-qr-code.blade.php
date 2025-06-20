@@ -28,7 +28,8 @@
                     if (data.connected) {
                         this.status = 'connected';
                         this.statusText = 'Connected';
-                        this.stopIntervals();
+                        this.stopIntervals(); // Stop all polling immediately
+                        return; // Exit early, no need to load QR code
                     } else if (data.qr_code) {
                         this.qrCode = data.qr_code;
                         this.status = 'connecting';
@@ -59,8 +60,9 @@
                     if (data.connected) {
                         this.status = 'connected';
                         this.statusText = 'Connected';
-                        this.stopIntervals();
+                        this.stopIntervals(); // Stop all polling immediately
                         await this.updateRecordStatus('connected');
+                        return; // Exit early to prevent further polling
                     } else if (data.status && data.status.hasQR) {
                         this.status = 'connecting';
                         this.statusText = 'Waiting for scan...';
@@ -101,6 +103,10 @@
         },
 
         async refreshQR() {
+            // Don't refresh if already connected
+            if (this.status === 'connected') {
+                return;
+            }
             await this.loadQRCode();
         },
 
@@ -108,22 +114,41 @@
             this.countdown = 60;
             if (this.refreshInterval) clearInterval(this.refreshInterval);
             
-            this.refreshInterval = setInterval(() => {
-                this.countdown--;
-                if (this.countdown <= 0) {
-                    this.loadQRCode();
-                }
-            }, 1000);
+            // Only start countdown if not connected
+            if (this.status !== 'connected') {
+                this.refreshInterval = setInterval(() => {
+                    // Check status before decrementing countdown
+                    if (this.status === 'connected') {
+                        this.stopIntervals();
+                        return;
+                    }
+                    
+                    this.countdown--;
+                    if (this.countdown <= 0) {
+                        // Only reload QR if still not connected
+                        if (this.status !== 'connected') {
+                            this.loadQRCode();
+                        }
+                    }
+                }, 1000);
+            }
         },
 
         startStatusCheck() {
             if (this.statusInterval) clearInterval(this.statusInterval);
             
-            this.statusInterval = setInterval(() => {
-                if (this.status !== 'connected') {
-                    this.checkStatus();
-                }
-            }, 3000);
+            // Only start status checking if not already connected
+            if (this.status !== 'connected') {
+                this.statusInterval = setInterval(() => {
+                    // Double check status before each poll
+                    if (this.status !== 'connected') {
+                        this.checkStatus();
+                    } else {
+                        // Stop polling if somehow status changed to connected
+                        this.stopIntervals();
+                    }
+                }, 3000);
+            }
         },
 
         stopIntervals() {

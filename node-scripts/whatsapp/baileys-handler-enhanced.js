@@ -324,8 +324,19 @@ class EnhancedWhatsAppHandler {
     async cleanupAuthFiles(accountId) {
         try {
             const authDir = path.join(__dirname, '../auth', accountId);
-            await fs.rmdir(authDir, { recursive: true });
-            logger.info(`Cleaned up auth files for account ${accountId}`);
+            
+            // Check if directory exists before trying to remove it
+            try {
+                await fs.access(authDir);
+                await fs.rm(authDir, { recursive: true, force: true });
+                logger.info(`Cleaned up auth files for account ${accountId}`);
+            } catch (accessError) {
+                if (accessError.code === 'ENOENT') {
+                    logger.info(`Auth directory for account ${accountId} does not exist, nothing to cleanup`);
+                } else {
+                    throw accessError;
+                }
+            }
         } catch (error) {
             logger.warn(`Failed to cleanup auth files for account ${accountId}:`, error);
         }

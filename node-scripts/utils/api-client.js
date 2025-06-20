@@ -9,7 +9,7 @@ class ApiClient {
         // Create axios instance with default config
         this.client = axios.create({
             baseURL: this.baseUrl,
-            timeout: 30000,
+            timeout: 30000, // Increased to 30000ms for better reliability 
             headers: {
                 'Content-Type': 'application/json',
                 'X-Webhook-Secret': this.webhookSecret,
@@ -94,11 +94,17 @@ class ApiClient {
     async notifySessionStatus(accountId, status, sessionId = null, userData = null) {
         try {
             const response = await this.client.post('/api/webhooks/whatsapp/session-status', {
-                account_id: accountId,
+                account_id: parseInt(accountId), // Ensure it's an integer
                 status: status,
-                session_id: sessionId,
+                session_id: sessionId || `session_${accountId}_${Date.now()}`, // Provide default session_id
                 user_data: userData,
                 timestamp: new Date().toISOString()
+            });
+            
+            logger.info('Session status notified successfully', {
+                accountId,
+                status,
+                sessionId
             });
             
             return response.data;
@@ -106,7 +112,9 @@ class ApiClient {
             logger.error('Failed to notify session status to Laravel:', {
                 error: error.message,
                 accountId,
-                status
+                status,
+                responseStatus: error.response?.status,
+                responseData: error.response?.data
             });
             // Don't throw error here to avoid breaking the flow
         }
@@ -115,17 +123,24 @@ class ApiClient {
     async notifyQRGenerated(accountId, qrCodeData, sessionId = null) {
         try {
             const response = await this.client.post('/api/webhooks/whatsapp/qr-generated', {
-                account_id: accountId,
+                account_id: parseInt(accountId), // Ensure it's an integer
                 qr_code: qrCodeData,
-                session_id: sessionId,
+                session_id: sessionId || `session_${accountId}_${Date.now()}`, // Provide default session_id
                 timestamp: new Date().toISOString()
+            });
+            
+            logger.info('QR generation notified successfully', {
+                accountId,
+                sessionId
             });
             
             return response.data;
         } catch (error) {
             logger.error('Failed to notify QR generation to Laravel:', {
                 error: error.message,
-                accountId
+                accountId,
+                status: error.response?.status,
+                responseData: error.response?.data
             });
             // Don't throw error here to avoid breaking the flow
         }
@@ -134,10 +149,17 @@ class ApiClient {
     async notifyConnectionStatus(accountId, status, message = null) {
         try {
             const response = await this.client.post('/api/webhooks/whatsapp/session-status', {
-                account_id: accountId,
+                account_id: parseInt(accountId), // Ensure it's an integer
                 status: status,
+                session_id: `session_${accountId}_${Date.now()}`, // Provide session_id
                 message: message,
                 timestamp: new Date().toISOString()
+            });
+            
+            logger.info('Connection status notified successfully', {
+                accountId,
+                status,
+                message
             });
             
             return response.data;
@@ -145,7 +167,9 @@ class ApiClient {
             logger.error('Failed to notify connection status to Laravel:', {
                 error: error.message,
                 accountId,
-                status
+                status,
+                responseStatus: error.response?.status,
+                responseData: error.response?.data
             });
             // Don't throw error here to avoid breaking the flow
         }

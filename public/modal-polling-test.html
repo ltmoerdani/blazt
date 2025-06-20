@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modal Polling Logic Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .status-box {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .status-connecting { background: #fff3cd; color: #856404; }
+        .status-connected { background: #d4edda; color: #155724; }
+        .status-disconnected { background: #f8d7da; color: #721c24; }
+        .log-box {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+            height: 300px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover { background: #0056b3; }
+        button:disabled { background: #6c757d; cursor: not-allowed; }
+        .simulate-btn { background: #28a745; }
+        .simulate-btn:hover { background: #1e7e34; }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🧪 Modal Polling Logic Test</h1>
+        <p>Testing the same polling logic as in admin modal to ensure it stops when connected.</p>
+        
+        <div id="statusBox" class="status-box status-connecting">
+            Status: <span id="statusText">Connecting...</span>
+        </div>
+        
+        <div>
+            <strong>Polling Intervals:</strong><br>
+            Status Check: <span id="statusIntervalInfo">Not running</span><br>
+            QR Refresh: <span id="refreshIntervalInfo">Not running</span><br>
+            Poll Count: <span id="pollCount">0</span>
+        </div>
+        
+        <div>
+            <button onclick="startPolling()">Start Polling</button>
+            <button onclick="stopPolling()">Stop Polling</button>
+            <button onclick="simulateConnect()" class="simulate-btn">Simulate Connection</button>
+            <button onclick="simulateDisconnect()" class="simulate-btn">Simulate Disconnect</button>
+            <button onclick="clearLogs()">Clear Logs</button>
+        </div>
+        
+        <div class="log-box" id="logBox">
+            <strong>Polling Activity Logs:</strong><br>
+            <span id="logContent">Ready to test...</span>
+        </div>
+    </div>
+
+    <script>
+        // Simulate the same Alpine.js logic from the modal
+        const state = {
+            accountId: '3',
+            recordId: 3,
+            status: 'connecting',
+            statusText: 'Connecting...',
+            refreshInterval: null,
+            statusInterval: null,
+            pollCount: 0
+        };
+
+        function addLog(message) {
+            const timestamp = new Date().toLocaleTimeString();
+            const logContent = document.getElementById('logContent');
+            logContent.innerHTML += `<br>[${timestamp}] ${message}`;
+            document.getElementById('logBox').scrollTop = document.getElementById('logBox').scrollHeight;
+        }
+
+        function updateUI() {
+            const statusBox = document.getElementById('statusBox');
+            const statusText = document.getElementById('statusText');
+            
+            statusText.textContent = state.statusText;
+            statusBox.className = `status-box status-${state.status}`;
+            
+            document.getElementById('statusIntervalInfo').textContent = 
+                state.statusInterval ? 'Running (every 3s)' : 'Stopped';
+            document.getElementById('refreshIntervalInfo').textContent = 
+                state.refreshInterval ? 'Running (every 1s)' : 'Stopped';
+            document.getElementById('pollCount').textContent = state.pollCount;
+        }
+
+        async function checkStatus() {
+            state.pollCount++;
+            addLog(`📊 Poll #${state.pollCount} - Checking connection status...`);
+            
+            try {
+                // Simulate API call - replace with actual endpoint when testing
+                // const response = await fetch(`/admin/whatsapp/qr-account/${state.recordId}`);
+                // const data = await response.json();
+                
+                // For testing, simulate response based on current state
+                const data = {
+                    success: true,
+                    connected: state.status === 'connected'
+                };
+
+                if (data.success) {
+                    if (data.connected) {
+                        state.status = 'connected';
+                        state.statusText = 'Connected';
+                        addLog('🎉 Connection detected! Stopping all polling...');
+                        stopIntervals();
+                        return; // Exit early to prevent further polling
+                    } else {
+                        state.status = 'connecting';
+                        state.statusText = 'Waiting for scan...';
+                        addLog('⏳ Still waiting for connection...');
+                    }
+                } else {
+                    state.status = 'disconnected';
+                    state.statusText = 'Service unavailable';
+                    addLog('❌ Service unavailable');
+                }
+            } catch (error) {
+                state.status = 'disconnected';
+                state.statusText = 'Connection error';
+                addLog('❌ Error: ' + error.message);
+            }
+            
+            updateUI();
+        }
+
+        function startStatusCheck() {
+            if (state.statusInterval) clearInterval(state.statusInterval);
+            
+            // Only start status checking if not already connected
+            if (state.status !== 'connected') {
+                addLog('🔄 Starting status polling (every 3 seconds)...');
+                state.statusInterval = setInterval(() => {
+                    // Double check status before each poll
+                    if (state.status !== 'connected') {
+                        checkStatus();
+                    } else {
+                        // Stop polling if somehow status changed to connected
+                        addLog('🛑 Status changed to connected during polling - stopping intervals');
+                        stopIntervals();
+                    }
+                }, 3000);
+            } else {
+                addLog('✅ Already connected - not starting status polling');
+            }
+            
+            updateUI();
+        }
+
+        function startCountdown() {
+            if (state.refreshInterval) clearInterval(state.refreshInterval);
+            
+            // Only start countdown if not connected
+            if (state.status !== 'connected') {
+                addLog('⏱️ Starting QR refresh countdown (60 seconds)...');
+                let countdown = 60;
+                state.refreshInterval = setInterval(() => {
+                    // Check status before decrementing countdown
+                    if (state.status === 'connected') {
+                        addLog('🛑 Connected during countdown - stopping refresh timer');
+                        stopIntervals();
+                        return;
+                    }
+                    
+                    countdown--;
+                    if (countdown <= 0) {
+                        // Only reload QR if still not connected
+                        if (state.status !== 'connected') {
+                            addLog('🔄 QR countdown expired - would refresh QR code now');
+                            countdown = 60; // Reset countdown
+                        }
+                    }
+                }, 1000);
+            } else {
+                addLog('✅ Already connected - not starting QR refresh countdown');
+            }
+            
+            updateUI();
+        }
+
+        function stopIntervals() {
+            if (state.refreshInterval) {
+                clearInterval(state.refreshInterval);
+                state.refreshInterval = null;
+                addLog('🛑 Stopped QR refresh interval');
+            }
+            if (state.statusInterval) {
+                clearInterval(state.statusInterval);
+                state.statusInterval = null;
+                addLog('🛑 Stopped status check interval');
+            }
+            updateUI();
+        }
+
+        function startPolling() {
+            addLog('🚀 Starting polling system...');
+            state.status = 'connecting';
+            state.statusText = 'Connecting...';
+            state.pollCount = 0;
+            startStatusCheck();
+            startCountdown();
+        }
+
+        function stopPolling() {
+            addLog('🛑 Manually stopping all polling...');
+            stopIntervals();
+        }
+
+        function simulateConnect() {
+            addLog('🎭 Simulating successful connection...');
+            state.status = 'connected';
+            state.statusText = 'Connected';
+            updateUI();
+            // The next status check should detect this and stop polling
+        }
+
+        function simulateDisconnect() {
+            addLog('🎭 Simulating disconnection...');
+            state.status = 'connecting';
+            state.statusText = 'Connecting...';
+            state.pollCount = 0;
+            updateUI();
+        }
+
+        function clearLogs() {
+            document.getElementById('logContent').innerHTML = 'Logs cleared...';
+        }
+
+        // Initialize
+        updateUI();
+        addLog('🧪 Test environment initialized. Click "Start Polling" to begin.');
+    </script>
+</body>
+</html>

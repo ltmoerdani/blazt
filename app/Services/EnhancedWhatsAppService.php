@@ -111,7 +111,7 @@ class EnhancedWhatsAppService
     {
         try {
             $response = Http::timeout($this->timeout)
-                ->get("{$this->baseUrl}/status/{$accountId}");
+                ->get("{$this->baseUrl}/account-status-v3/{$accountId}");
 
             if ($response->successful()) {
                 return $response->json();
@@ -192,6 +192,57 @@ class EnhancedWhatsAppService
                 'error' => $e->getMessage()
             ]);
             throw $e;
+        }
+    }
+
+    /**
+     * Sync account status from Enhanced Handler to database
+     */
+    public function syncAccountStatus(string $accountId): bool
+    {
+        try {
+            $status = $this->getConnectionStatus($accountId);
+            
+            if ($status && isset($status['success'])) {
+                // Find the account in database
+                $account = \App\Domain\WhatsApp\Models\WhatsAppAccount::find($accountId);
+                
+                if ($account) {
+                    $newStatus = 'disconnected';
+                    if ($status['connected']) {
+                        $newStatus = 'connected';
+                    } elseif (isset($status['hasQR']) && $status['hasQR']) {
+                        $newStatus = 'connecting';
+                    }
+                    
+                    $updateData = [
+                        'status' => $newStatus,
+                        'health_check_at' => now()
+                    ];
+                    
+                    if ($newStatus === 'connected') {
+                        $updateData['last_connected_at'] = now();
+                    }
+                    
+                    $account->update($updateData);
+                    
+                    Log::info('Account status synced from Enhanced Handler', [
+                        'account_id' => $accountId,
+                        'old_status' => $account->getOriginal('status'),
+                        'new_status' => $newStatus
+                    ]);
+                    
+                    return true;
+                }
+            }
+            
+            return false;
+        } catch (\Exception $e) {
+            Log::error('Failed to sync account status', [
+                'account_id' => $accountId,
+                'error' => $e->getMessage()
+            ]);
+            return false;
         }
     }
 }

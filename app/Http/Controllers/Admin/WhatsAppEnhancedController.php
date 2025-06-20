@@ -150,11 +150,26 @@ class WhatsAppEnhancedController extends Controller
                 return $this->errorResponse('Enhanced Handler service is not available', 503);
             }
 
-            // Get current status
+            // Sync status from Enhanced Handler to database
+            $this->enhancedService->syncAccountStatus($accountId);
+            
+            // Get current status from Enhanced Handler
             $status = $this->enhancedService->getConnectionStatus($accountId);
             
-            // If already connected, return status
-            if ($status && $status['connected']) {
+            // Check database status as well
+            $account->refresh(); // Refresh from database
+            
+            // If either Enhanced Handler or database shows connected, consider it connected
+            if (($status && $status['connected']) || $account->status === 'connected') {
+                // Update database if Enhanced Handler shows connected but DB doesn't
+                if ($status && $status['connected'] && $account->status !== 'connected') {
+                    $account->update([
+                        'status' => 'connected',
+                        'last_connected_at' => now(),
+                        'health_check_at' => now()
+                    ]);
+                }
+                
                 return response()->json([
                     'success' => true,
                     'connected' => true,

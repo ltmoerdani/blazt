@@ -16,7 +16,7 @@ class WebhookController extends Controller
     protected SessionManagerInterface $sessionManager;
 
     // Validation constants
-    private const REQUIRED_ACCOUNT_ID = 'required|integer|exists:whatsapp_accounts,id';
+    private const REQUIRED_ACCOUNT_ID = 'required|integer|min:1';
     private const REQUIRED_STRING = 'required|string';
     private const NULLABLE_STRING = 'nullable|string';
     
@@ -41,11 +41,23 @@ class WebhookController extends Controller
         ]);
 
         if ($validator->fails()) {
+            Log::warning("QR webhook validation failed", [
+                'errors' => $validator->errors()->toArray(),
+                'request_data' => $request->all()
+            ]);
             return response()->json(['error' => self::ERROR_INVALID_DATA], 400);
         }
 
         try {
-            $account = WhatsAppAccount::findOrFail($request->account_id);
+            $account = WhatsAppAccount::find($request->account_id);
+            
+            if (!$account) {
+                Log::warning("QR webhook received for non-existent account", [
+                    'account_id' => $request->account_id
+                ]);
+                return response()->json(['error' => 'Account not found'], 404);
+            }
+            
             $session = $this->sessionManager->getAccountSession($account);
 
             if (!$session) {
@@ -95,11 +107,30 @@ class WebhookController extends Controller
         ]);
 
         if ($validator->fails()) {
+            Log::warning("Session status webhook validation failed", [
+                'errors' => $validator->errors()->toArray(),
+                'request_data' => $request->all()
+            ]);
             return response()->json(['error' => self::ERROR_INVALID_DATA], 400);
         }
 
         try {
-            $account = WhatsAppAccount::findOrFail($request->account_id);
+            $account = WhatsAppAccount::find($request->account_id);
+            
+            if (!$account) {
+                Log::warning("Session status webhook received for non-existent account", [
+                    'account_id' => $request->account_id
+                ]);
+                return response()->json(['error' => 'Account not found'], 404);
+            }
+            
+            // Update account status directly
+            $account->update([
+                'status' => $request->status,
+                'last_connected_at' => $request->status === 'connected' ? now() : $account->last_connected_at,
+                'health_check_at' => now()
+            ]);
+            
             $session = $this->sessionManager->getAccountSession($account);
 
             if (!$session && $request->session_id) {
